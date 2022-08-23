@@ -460,6 +460,8 @@ function updateSettings(fromButton) {
     }
   }
 
+  saveCookie();
+
   if (fromButton) {
     restart(); // restart to see the changes
   }
@@ -558,6 +560,7 @@ function toggleSetting(id) {
 }
 
 function start() {
+	openCookie();
   addSettingsToHTML();
   updateSettings(false);
 
@@ -821,6 +824,7 @@ function openKeysSettings() {
 function closeKeysSettings() {
   settingsDiv.style.display = "none";
   removeKeysListeners();
+  saveCookie();
   restart();
 }
 
@@ -832,4 +836,44 @@ function openHelp() {
 function closeHelp() {
   helpDiv.style.display = "none";
   restart();
+}
+
+function deleteAllCookies() {
+  var cookies = document.cookie.split(";");
+
+  for (var i = 0; i < cookies.length; i++) {
+    document.cookie = cookie.split("=")[0] + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+  }
+}
+
+function openCookie() {
+	console.log("open");
+	if (document.cookie !== "") {
+    let keysValues, preferences, key, value;
+    keysValues = document.cookie.split(";");
+    preferences = {};
+    for (let i = 0; i < keysValues.length; i++) {
+    	key = keysValues[i].split("=")[0];
+    	value = keysValues[i].split("=")[1];
+      preferences[key] = value;
+    }
+  	console.log(preferences);
+  }
+}
+
+function saveCookie() {
+	console.log("save");
+	let cookie, end, date, keys_;
+  cookie = "";
+  date = new Date(Date.now() + 2592000000);
+  end = ";expires=" + date.toGMTString() + ";path=/"
+
+	// add keybinds
+  keys_ = Object.keys(keys);
+  for (let i = 0; i < keys_.length; i++) {
+  	cookie += keys_[i] + "=" + keys[keys_[i]] + end;
+  }
+
+	console.log(cookie);
+  document.cookie = cookie;
 }
