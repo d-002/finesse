@@ -1,7 +1,7 @@
 let canvas, toggleMessage, mobileControlsDiv, stopButton, tips, totalFinesseP, totalPiecesP, ppsP, mobileButtons, adDiv, settingsButton, settingsDiv, settingsForm, helpDiv;
 let device, threads, patterns, patternNames, rotationNames, colors, colors_, piece, pressed, keysQueue, keys, DAS, ARR, pieceChoice, positionChoice, rotationChoice, goal, scores, totalFinesse, finesse, finesseCodes, nPieces, whenPlaced;
 device = "Desktop";
-threads = {}; // id: running
+threads = {}; // thread id: isRunning
 mobileButtons = [];
 patterns = [
   ["0000", "0110", "0110", "0000"], // O
@@ -426,9 +426,7 @@ function updateSettings(fromButton) {
   // [list to get the names from, list to add to, string to add before id]
   let values = [
     [patternNames, pieceChoice, "piece-"],
-    [
-      positionNames, positionChoice, "position-"
-    ],
+    [positionNames, positionChoice, "position-"],
     [rotationNames, rotationChoice, "rotation-"]
   ];
 
@@ -467,10 +465,14 @@ function updateSettings(fromButton) {
 
 function updateSettingsInHTML() {
   // [list to check if selected, list to get the names from, string to add before id]
+  let rotationChoiceStr = [];
+  for (let i = 0; i < rotationChoice.length; i++) {
+    rotationChoiceStr.push(rotationNames[rotationChoice[i]]);
+  }
   let values = [
     [pieceChoice, patternNames, "piece-"],
     [positionChoice, positionNames, "position-"],
-    [rotationChoice, rotationNames, "rotation-"]
+    [rotationChoiceStr, rotationNames, "rotation-"]
   ];
 
   for (let i = 0; i < values.length; i++) { // update checkboxes
@@ -514,7 +516,7 @@ function addSettingsToHTML() {
       let element = document.createElement("a");
       element.setAttribute("id", addToId + list[j]);
       element.setAttribute("href", "javascript:toggleSetting('ID')".replace(/ID/g, element.id));
-      element.classList.add("checked");
+      element.classList.add("unchecked");
       element.innerHTML = list[j];
 
       // if piece, color it like the piece
@@ -885,7 +887,7 @@ function openCookies() {
     let keys_ = Object.keys(preferences);
     let keysKeys = Object.keys(keys);
     for (let i = 0; i < keys_.length; i++) {
-	    // first, add to the keys dictionary
+      // first, add to the keys dictionary
       toAdd = undefined;
       if (keysKeys.includes(keys_[i])) {
         toAdd = keys;
@@ -906,25 +908,27 @@ function openCookies() {
         }
         if (toAdd !== undefined) {
           let index = keys_[i].indexOf("-");
-          toAdd.push(keys_[i].slice(index+1));
+          toAdd.push(keys_[i].slice(index + 1));
         }
       }
-		}
-    
+    }
+
     // convert positions to integers
     for (let i = 0; i < positionChoice.length; i++) {
-    	positionChoice[i] = parseInt(positionChoice[i]);
+      positionChoice[i] = parseInt(positionChoice[i]);
     }
     // convert rotations to integers
     for (let i = 0; i < rotationChoice.length; i++) {
-    	rotationChoice[i] = rotationNames.indexOf(rotationChoice[i]);
+      rotationChoice[i] = rotationNames.indexOf(rotationChoice[i]);
     }
-	  updateSettingsInHTML();
   } else { // no cookies saved: save them and leave everything on (in saveSettingsToHTML)
-  	console.log("Could not retrieve any cookies");
-    updateSettings();
+    console.log("Could not retrieve any cookies");
+    pieceChoice = [...patternNames];
+    positionChoice = [...positionNames];
+    rotationChoice = [...rotationNames];
     saveCookies(); // update cookies
   }
+  updateSettingsInHTML();
 }
 
 function saveCookies() {
@@ -939,7 +943,7 @@ function saveCookies() {
 
   let rotationChoiceStr = [];
   for (let i = 0; i < rotationChoice.length; i++) {
-  	rotationChoiceStr.push(rotationNames.indexOf(rotationChoiceStr[i]));
+    rotationChoiceStr.push(rotationNames[rotationChoice[i]]);
   }
   // [list to read from, possible values, add to variable name]
   let values = [
