@@ -869,7 +869,7 @@ function deleteAllCookies() {
 
 function openCookies() {
   if (document.cookie !== "") {
-    let keysValues = document.cookie.split(";");
+    let keysValues = document.cookie.replace(/ /g, "").split(";");
     let preferences = {};
     for (let i = 0; i < keysValues.length; i++) {
       let key = keysValues[i].split("=")[0];
@@ -895,7 +895,6 @@ function openCookies() {
 
       // then, add to the piece settings lists
       if (preferences[keys_[i]] === "true") {
-      	console.log(keys_[i] + "is true");
         toAdd = undefined;
         if (keys_[i].startsWith("piece")) {
           toAdd = pieceChoice;
@@ -933,7 +932,6 @@ function saveCookies() {
   let keys_ = Object.keys(keys);
   for (let i = 0; i < keys_.length; i++) {
     document.cookie = keys_[i] + "=" + keys[keys_[i]] + end;
-    console.log(document.cookie);
   }
 
   // [list to read from, possible values, add to variable name]
@@ -954,7 +952,6 @@ function saveCookies() {
         value = true;
       }
       document.cookie = addToVar + possibleValues[j] + "=" + value + end;
-      console.log(document.cookie);
     }
   }
 }
