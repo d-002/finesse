@@ -914,6 +914,10 @@ function openCookies() {
     for (let i = 0; i < positionChoice.length; i++) {
     	positionChoice[i] = parseInt(positionChoice[i]);
     }
+    // convert rotations to integers
+    for (let i = 0; i < rotationChoice.length; i++) {
+    	rotationChoice[i] = rotationNames.indexOf(rotationChoice[i]);
+    }
   } else { // no cookies saved: reset to default and allow everything
   	console.log("Could not retrieve any cookies");
   	pieceChoice = [...patternNames];
