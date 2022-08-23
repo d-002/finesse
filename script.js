@@ -870,7 +870,6 @@ function deleteAllCookies() {
 function openCookies() {
   if (document.cookie !== "") {
     let keysValues = document.cookie.split(";");
-    //keysValues = "left=ArrowLeft;right=ArrowRight;hardDrop= ;rotateCCW=z;rotateCW=ArrowUp;rotate180=a;piece-O=0;piece-T=0;piece-J=0;piece-L=0;piece-S=0;piece-Z=0;piece-I=0;position--1=0;position-0=0;position-1=0;position-2=0;position-3=0;position-4=0;position-5=0;position-6=0;position-7=0;position-8=0;rotation-N=0;rotation-E=0;rotation-S=0;rotation-W=0".split(";");
     let preferences = {};
     for (let i = 0; i < keysValues.length; i++) {
       let key = keysValues[i].split("=")[0];
@@ -895,7 +894,7 @@ function openCookies() {
       }
 
       // then, add to the piece settings lists
-      if (preferences[keys_[i]] === "1") {
+      if (preferences[keys_[i]] === "true") {
         toAdd = undefined;
         if (keys_[i].startsWith("piece")) {
           toAdd = pieceChoice;
