@@ -1,7 +1,7 @@
 let canvas, toggleMessage, mobileControlsDiv, stopButton, tips, totalFinesseP, totalPiecesP, ppsP, mobileButtons, adDiv, settingsButton, settingsDiv, settingsForm, helpDiv;
 let device, threads, patterns, patternNames, rotationNames, colors, colors_, piece, pressed, keysQueue, keys, DAS, ARR, pieceChoice, positionChoice, rotationChoice, goal, scores, totalFinesse, finesse, finesseCodes, nPieces, whenPlaced;
 device = "Desktop";
-threads = {}; // thread id: isRunning
+threads = {}; // thread id: isRunningg
 mobileButtons = [];
 patterns = [
   ["0000", "0110", "0110", "0000"], // O
@@ -925,7 +925,10 @@ function openCookies() {
     console.log("Could not retrieve any cookies");
     pieceChoice = [...patternNames];
     positionChoice = [...positionNames];
-    rotationChoice = [...rotationNames];
+    rotationChoice = [];
+    for (let i = 0; i < rotationNames.length; i++) {
+    	rotationChoice.push(i);
+    }
     saveCookies(); // update cookies
   }
   updateSettingsInHTML();
