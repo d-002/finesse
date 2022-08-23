@@ -459,7 +459,7 @@ function updateSettings(fromButton) {
   }
 
   if (fromButton) {
-    saveCookie();
+    saveCookies();
     restart(); // restart to see the changes
   }
 }
@@ -598,7 +598,7 @@ function start() {
   addSettingsToHTML();
   addKeysSettingsToHTML();
   updateSettings(false);
-  openCookie();
+  openCookies();
 
   restart();
 }
@@ -845,7 +845,7 @@ function openKeysSettings() {
 function closeKeysSettings() {
   settingsDiv.style.display = "none";
   removeKeysListeners();
-  saveCookie();
+  saveCookies();
   restart();
 }
 
@@ -867,7 +867,7 @@ function deleteAllCookies() {
   }
 }
 
-function openCookie() {
+function openCookies() {
   if (document.cookie !== "") {
     let keysValues = document.cookie.split(";");
     //keysValues = "left=ArrowLeft;right=ArrowRight;hardDrop= ;rotateCCW=z;rotateCW=ArrowUp;rotate180=a;piece-O=0;piece-T=0;piece-J=0;piece-L=0;piece-S=0;piece-Z=0;piece-I=0;position--1=0;position-0=0;position-1=0;position-2=0;position-3=0;position-4=0;position-5=0;position-6=0;position-7=0;position-8=0;rotation-N=0;rotation-E=0;rotation-S=0;rotation-W=0".split(";");
@@ -925,15 +925,14 @@ function openCookie() {
   updateSettingsInHTML();
 }
 
-function saveCookie() {
-  let cookie = "";
+function saveCookies() {
   let date = new Date(Date.now() + 2592000000);
-  let end = ";expires=" + date.toGMTString() + ";path=/;"
+  let end = ";expires=" + date.toGMTString() + ";path=/"
 
   // add keybinds
   let keys_ = Object.keys(keys);
   for (let i = 0; i < keys_.length; i++) {
-    cookie += keys_[i] + "=" + keys[keys_[i]] + end;
+    document.cookie = keys_[i] + "=" + keys[keys_[i]] + end;
   }
 
   // [list to read from, possible values, add to variable name]
@@ -953,10 +952,7 @@ function saveCookie() {
       if (list.includes(possibleValues[j])) {
         value = true;
       }
-      cookie += addToVar + possibleValues[j] + "=" + value + end;
+      document.cookie = addToVar + possibleValues[j] + "=" + value + end;
     }
   }
-
-  cookie = cookie.slice(0, -1);
-  document.cookie = cookie;
 }
