@@ -895,6 +895,7 @@ function openCookies() {
 
       // then, add to the piece settings lists
       if (preferences[keys_[i]] === "true") {
+      	console.log(keys_[i] + "is true");
         toAdd = undefined;
         if (keys_[i].startsWith("piece")) {
           toAdd = pieceChoice;
