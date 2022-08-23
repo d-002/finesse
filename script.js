@@ -13,6 +13,7 @@ patterns = [
   ["0000", "1111", "0000", "0000"], // I
 ];
 patternNames = ["O", "T", "J", "L", "S", "Z", "I"];
+positionNames = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8];
 rotationNames = ["N", "E", "S", "W"];
 colors = ["#f6d03c", "#9739a2", "#f38927", "#1165b5", "#51b84d", "#eb4f65", "#42afe1", "#868686"]; // last one for goal
 colors_ = ["#ffff7f", "#d958e9", "#ffba59", "#339bff", "#84f880", "#ff7f79", "#6ceaff", "#dddddd"]; // top of the blocks
@@ -426,7 +427,7 @@ function updateSettings(fromButton) {
   let values = [
     [patternNames, pieceChoice, "piece-"],
     [
-      [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8], positionChoice, "position-"
+      positionNames, positionChoice, "position-"
     ],
     [rotationNames, rotationChoice, "rotation-"]
   ];
@@ -468,7 +469,7 @@ function updateSettingsInHTML() {
   // [list to check if selected, list to get the names from, string to add before id]
   let values = [
     [pieceChoice, patternNames, "piece-"],
-    [positionChoice, [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8], "position-"],
+    [positionChoice, positionNames, "position-"],
     [rotationChoice, rotationNames, "rotation-"]
   ];
 
@@ -501,7 +502,7 @@ function addSettingsToHTML() {
   // [place to put, list to get the names from, string to add before id]
   let values = [
     [pieces, patternNames, "piece-"],
-    [positions, [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8], "position-"],
+    [positions, positionNames, "position-"],
     [rotations, rotationNames, "rotation-"]
   ];
 
@@ -936,11 +937,15 @@ function saveCookies() {
     document.cookie = keys_[i] + "=" + keys[keys_[i]] + end;
   }
 
+  let rotationChoiceStr = [];
+  for (let i = 0; i < rotationChoice.length; i++) {
+  	rotationChoiceStr.push(rotationNames.indexOf(rotationChoiceStr[i]));
+  }
   // [list to read from, possible values, add to variable name]
   let values = [
     [pieceChoice, patternNames, "piece-"],
-    [positionChoice, [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8], "position-"],
-    [rotationChoice, rotationNames, "rotation-"]
+    [positionChoice, positionNames, "position-"],
+    [rotationChoiceStr, rotationNames, "rotation-"]
   ];
 
   for (let i = 0; i < values.length; i++) {
