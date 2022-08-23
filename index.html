@@ -1,0 +1,109 @@
+<html>
+
+  <head>
+    <title>Finesse training</title>
+    <script src="script.js">
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body onload="javascript:start()">
+    <div>
+      <noscript>
+        <h1>Javascript disabled</h1>
+        <p>In order for this page to work, you must enable Javascript.</p>
+      </noscript>
+      <h1>Finesse training</h1>
+
+      <span id="toggle-message">Desktop website -</span>
+      <a href="javascript:toggleDevice()">Toggle</a>
+
+      <div class="invisible">
+        <a href="javascript:restart()" class="pseudo-button">Restart</a>
+        <a href="javascript:stop()" id="stop" class="pseudo-button">Stop</a>
+      </div>
+      <div class="invisible">
+        <a href="javascript:openKeysSettings()" id="settings-button" class="pseudo-button">Keys settings</a>
+        <a href="javascript:openHelp()" class="pseudo-button">Help</a>
+      </div>
+
+      <h2>Piece settings</h2>
+      <form id="settings-form" action="javascript:updateSettings(true)">
+        <input id="DAS" value="133" ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57" required>
+        <label for="DAS">DAS (ms)</label><br>
+        <input id="ARR" value="0" ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57" required>
+        <label for="ARR">ARR (ms)</label><br>
+
+        <h3 id="allowed-pieces">Allowed pieces</h3><br>
+        <h3 id="allowed-positions">Allowed horizontal positions</h3><br>
+        <h3 id="allowed-rotations">Allowed rotations</h3><br>
+
+        <input type="submit" value="Apply changes" class="input-button">
+      </form>
+
+      <h2>Finesse</h2>
+      <p id="total-finesse">Total finesse: 0</p>
+      <p id="total-pieces">Total pieces: 0</p>
+      <p id="pps">PPS: -</p>
+      <p id="tips">Tips: -</p>
+    </div>
+
+    <canvas width=400 height=800 id="canvas">Your browser does not support canvases.</canvas>
+
+    <div id="mobile-controls-div" class="invisible">
+      <button linked-action="left">&#8592;</button>
+      <button linked-action="right">&#8594;</button>
+      <button linked-action="hardDrop">&#8595;</button>
+      <button linked-action="rotate180">&#8635;</button>
+      <button linked-action="rotateCCW">&#8630;</button>
+      <button linked-action="rotateCW">&#8631;</button>
+    </div>
+
+    <div id="ad" class="invisible">
+      <div id="ad-inner" class="invisible">
+        <a href="https://www.youtube.com/channel/UCaIXBey935UVtn8Dm1DF_QQ/" target="_blank"><img src="https://yt3.ggpht.com/ytc/AKedOLRJDu7qwF0q--FsWRnJ69k0osTkCO7gvwTFNAEf=s88-c-k-c0x00ffffff-no-rj" width=66 height=66></a>
+        <div class="invisible">
+          <p>Finesse training</p>
+          <p>by D_00</p>
+        </div>
+      </div>
+      <p>Design inspired by <a href="https://four.lol">four.lol</a></p>
+    </div>
+
+    <div id="keys-settings" class="invisible">
+      <div id="keys-settings-inner">
+        <h1>Keys settings</h1>
+        <p>Click in a box and press a key to change its value</p>
+        <form action="javascript:1" id="keys-settings-form">
+
+        </form>
+        <div class="invisible">
+          <a href="javascript:closeKeysSettings()" class="pseudo-button">Save and close</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="help" class="invisible">
+      <div id="help-inner">
+        <h1>Help</h1>
+        <h2>General</h2>
+        <p>Place pieces one at a time where the grey shadow is.</p>
+        <p>You can change the pieces you want to train on, their positions and rotations by selecting or unselecting the colored letters and numbers in the <a>Piece settings</a> section. You must then validate your settings by clicking on the <a>Apply changes</a> button.</p>
+        <p>You can change your keybinds in the <a>Keys settings</a> menu, and your DAS/ARR preferences in the <a>Piece settings</a>.</p>
+        <p>Your total finesse, pieces, PPS are displayed, along with some tips to help you improve.</p>
+
+        <h2>Mobile</h2>
+        <p>This trainer has got a mobile version that reorganizes the screen and adds buttons to the bottom of the screen similarly to <a href="https://jstris.jezevec10.com">Jstris</a>.</p>
+
+        <h2>Cookies</h2>
+        <p>A cookie is used to save your preferences and expires in 30 days. By using this finesse trainer, you accept the use of cookies.</p>
+        
+        <h3>Upcoming</h3>
+        <p>Settings saved in cookies</p>
+        <div class="invisible">
+          <a href="javascript:closeHelp()" class="pseudo-button">Close</a>
+        </div>
+      </div>
+    </div>
+  </body>
+
+</html>
