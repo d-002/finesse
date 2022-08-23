@@ -933,6 +933,7 @@ function saveCookies() {
   let keys_ = Object.keys(keys);
   for (let i = 0; i < keys_.length; i++) {
     document.cookie = keys_[i] + "=" + keys[keys_[i]] + end;
+    console.log(document.cookie);
   }
 
   // [list to read from, possible values, add to variable name]
@@ -953,6 +954,7 @@ function saveCookies() {
         value = true;
       }
       document.cookie = addToVar + possibleValues[j] + "=" + value + end;
+      console.log(document.cookie);
     }
   }
 }
