@@ -513,7 +513,7 @@ function addSettingsToHTML() {
       let element = document.createElement("a");
       element.setAttribute("id", addToId + list[j]);
       element.setAttribute("href", "javascript:toggleSetting('ID')".replace(/ID/g, element.id));
-      element.classList.add("unchecked");
+      element.classList.add("checked");
       element.innerHTML = list[j];
 
       // if piece, color it like the piece
@@ -918,14 +918,12 @@ function openCookies() {
     for (let i = 0; i < rotationChoice.length; i++) {
     	rotationChoice[i] = rotationNames.indexOf(rotationChoice[i]);
     }
-  } else { // no cookies saved: reset to default and allow everything
+	  updateSettingsInHTML();
+  } else { // no cookies saved: save them and leave everything on (in saveSettingsToHTML)
   	console.log("Could not retrieve any cookies");
-  	pieceChoice = [...patternNames];
-    positionChoice = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8];
-    rotationChoice = [...rotationNames];
+    updateSettings();
     saveCookies(); // update cookies
   }
-  updateSettingsInHTML();
 }
 
 function saveCookies() {
