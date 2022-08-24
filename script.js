@@ -983,4 +983,5 @@ function saveCookies() {
 function hideCookiePopup() {
 	cookiePopupOk = true;
   cookiePopup.style.display = "none";
+  saveCookies();
 }
