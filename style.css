@@ -90,6 +90,10 @@ div:not(.invisible) {
   border-color: #fff;
 }
 
+.pseudo-button:active {
+  color: #fff;
+}
+
 .red {
   /* pseudo-button */
   border: 2px solid #a55;
@@ -115,16 +119,6 @@ div:not(.invisible) {
   border: none;
   box-shadow: none;
   border-radius: 0;
-}
-
-button {
-  border: 2px solid #ccc;
-  background-color: rgba(0, 0, 0, 0.5);
-  width: 50px;
-  height: 50px;
-  font-size: 25px;
-  color: #ccc;
-  font-weight: 1000;
 }
 
 .touched {
@@ -194,6 +188,10 @@ a.unchecked {
   color: #dcddde;
 }
 
+.input-button:active {
+  color: #fff;
+}
+
 #ad {
   position: fixed;
   display: block;
@@ -227,6 +225,15 @@ a.unchecked {
   max-width: 80%;
   max-height: 80%;
   overflow: auto;
+}
+
+#cookie-popup {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  background-color: #3a3d45;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
 }
 
 div ::-webkit-scrollbar {
