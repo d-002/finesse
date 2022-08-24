@@ -919,7 +919,7 @@ function openCookies() {
     }
     
     // then, others
-    if (preferences[keys_.cookiePopupOk] === "true") {
+    if (preferences.cookiePopupOk === "true") {
     	cookiePopupOk = true;
       hideCookiePopup();
     }
