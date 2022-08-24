@@ -1,7 +1,7 @@
-let canvas, toggleMessage, mobileControlsDiv, stopButton, tips, totalFinesseP, totalPiecesP, ppsP, mobileButtons, adDiv, settingsButton, settingsDiv, settingsForm, helpDiv;
-let device, threads, patterns, patternNames, rotationNames, colors, colors_, piece, pressed, keysQueue, keys, DAS, ARR, pieceChoice, positionChoice, rotationChoice, goal, scores, totalFinesse, finesse, finesseCodes, nPieces, whenPlaced;
+let canvas, toggleMessage, mobileControlsDiv, stopButton, tips, totalFinesseP, totalPiecesP, ppsP, mobileButtons, adDiv, settingsButton, settingsDiv, settingsForm, helpDiv, cookiePopup;
+let device, threads, patterns, patternNames, rotationNames, colors, colors_, piece, pressed, keysQueue, keys, DAS, ARR, pieceChoice, positionChoice, rotationChoice, goal, scores, totalFinesse, finesse, finesseCodes, nPieces, whenPlaced, cookiePopupOk;
 device = "Desktop";
-threads = {}; // thread id: isRunningg
+threads = {}; // thread id: isRunning
 mobileButtons = [];
 patterns = [
   ["0000", "0110", "0110", "0000"], // O
@@ -37,6 +37,7 @@ keysNames = {
 }
 totalFinesse = 0; // number of errors
 nPieces = 0; // number of placed pieces
+cookiePopupOk = false; // set to true when popup button clicked
 
 whenPlaced = []; // when each piece has been placed (used to calculate PPS)
 
@@ -597,6 +598,7 @@ function start() {
   settingsDiv = document.getElementById("keys-settings");
   settingsForm = document.getElementById("keys-settings-form");
   helpDiv = document.getElementById("help");
+  cookiePopup = document.getElementById("cookie-popup");
 
   addSettingsToHTML();
   addKeysSettingsToHTML();
@@ -912,6 +914,12 @@ function openCookies() {
         }
       }
     }
+    
+    // then, others
+    if (preferences[keys_.cookiePopupOk] === "true") {
+    	cookiePopupOk = true;
+      hideCookiePopup();
+    }
 
     // convert positions to integers
     for (let i = 0; i < positionChoice.length; i++) {
@@ -968,4 +976,11 @@ function saveCookies() {
       document.cookie = addToVar + possibleValues[j] + "=" + value + end;
     }
   }
+  
+  document.cookie = "cookiePopupOk=" + cookiePopupOk + end;
+}
+
+function hideCookiePopup() {
+	cookiePopupOk = true;
+  cookiePopup.style.display = "none";
 }
