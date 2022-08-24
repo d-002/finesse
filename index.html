@@ -2,8 +2,6 @@
 
   <head>
     <title>Finesse training</title>
-    <script src="script.js"></script>
-    <link rel="stylesheet" href="style.css">
   </head>
 
   <body onload="javascript:start()">
@@ -37,10 +35,11 @@
         <h3 id="allowed-positions">Allowed horizontal positions</h3><br>
         <h3 id="allowed-rotations">Allowed rotations</h3><br>
 
+        <br>
         <input type="submit" value="Apply changes" class="input-button">
       </form>
 
-      <h2>Finesse</h2>
+     <h2>Finesse</h2>
       <p id="total-finesse">Total finesse: 0</p>
       <p id="total-pieces">Total pieces: 0</p>
       <p id="pps">PPS: -</p>
@@ -82,6 +81,14 @@
       </div>
     </div>
 
+    <div id="cookie-popup" class="invisible">
+      <p>
+      This webpage uses cookies to save your preferences.
+      <a href="javascript:openHelp()" class="pseudo-button">Learn more</a>
+      <a href="javascript:hideCookiePopup()" class="pseudo-button">Got it</a>
+      </p>
+    </div>
+
     <div id="help" class="invisible">
       <div id="help-inner">
         <h1>Help</h1>
@@ -95,10 +102,11 @@
         <p>This trainer has got a mobile version that reorganizes the screen and adds buttons to the bottom of the screen similarly to <a href="https://jstris.jezevec10.com">Jstris</a>.</p>
 
         <h2>Cookies</h2>
-        <p>A cookie is used to save your preferences and expires in 30 days. By using this finesse trainer, you accept the use of cookies.</p>
+        <p>Cookies are used to save your preferences and expire in 30 days. By using this finesse trainer, you accept the use of cookies.</p>
         
         <h3>Upcoming</h3>
-        <p>Settings saved in cookies</p>
+        <p>- Better mobile buttons</p>
+        <p>- Desktop/mobile auto-choose</p>
         <div class="invisible">
           <a href="javascript:closeHelp()" class="pseudo-button">Close</a>
         </div>
