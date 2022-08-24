@@ -604,7 +604,7 @@ function start() {
   addKeysSettingsToHTML();
   updateSettings(false);
   openCookies();
-  if (!cookiePopupOk) {
+  if (cookiePopupOk) {
   	hideCookiePopup();
   }
 
