@@ -17,6 +17,10 @@ canvas {
   background-color: #3a3d45;
 }
 
+noscript {
+  color: #f55;
+}
+
 h1 {
   margin: 0 0 10px 0;
   font-size: 30px;
