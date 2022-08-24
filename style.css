@@ -17,7 +17,7 @@ canvas {
   background-color: #3a3d45;
 }
 
-noscript {
+noscript,canvas {
   color: #f55;
 }
 
