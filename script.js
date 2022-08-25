@@ -914,12 +914,12 @@ function openCookies() {
     if (preferences.DAS !== undefined) {
     	DAS = preferences.DAS;
 		  let DAS_ = document.getElementById("DAS");
-      DAS_.innerHTML = DAS_;
+      DAS_.value = DAS;
     }
     if (preferences.ARR !== undefined) {
     	ARR = preferences.ARR;
 	  	let ARR_ = document.getElementById("ARR");
-      ARR_.innerHTML = ARR;
+      ARR_.value = ARR;
     }
 
     for (let i = 0; i < positionChoice.length; i++) { // convert positions to integers + shift them
