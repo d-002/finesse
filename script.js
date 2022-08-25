@@ -848,7 +848,7 @@ function deleteAllCookies() {
   var cookies = document.cookie.split(";");
 
   for (var i = 0; i < cookies.length; i++) {
-    document.cookie = cookies.split("=")[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+    document.cookie = cookies[i].split("=")[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
   }
 }
 
@@ -860,7 +860,6 @@ function openCookies() {
 
 	if (document.cookie !== "") {
     let keysValues = document.cookie.replace(/ /g, "").split(";");
-    keysValues = "left=q; right=d; hardDrop=s; rotateCCW=ArrowLeft; rotateCW=ArrowRight; rotate180=ArrowDown; cookiePopupOk=true; pieces=OTJLSZI; positions=0123456789; rotations=NESW".replace(/ /g, "").split(";");
     let preferences = {};
     let keys_ = [];
     for (let i = 0; i < keysValues.length; i++) {
