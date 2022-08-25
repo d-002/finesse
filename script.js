@@ -940,9 +940,169 @@ function saveCookies() {
   
   // others
   document.cookie = "cookiePopupOk=" + cookiePopupOk + end;
+  console.log("cookiePopupOk=" + cookiePopupOk + end);
 }
 
 function hideCookiePopup() {
+	cookiePopupOk = true; // user when close button clicked
   cookiePopup.style.display = "none";
   saveCookies();
 }
+the pieces toggles
+  let style = document.createElement("style");
+  document.getElementsByTagName("head")[0].appendChild(style);
+
+  let div = document.getElementById("settings-form");
+  let pieces = document.getElementById("allowed-pieces");
+  let positions = document.getElementById("allowed-positions");
+  let rotations = document.getElementById("allowed-rotations");
+
+  // [place to put, list to get the names from, string to add before id]
+  let values = [
+    [pieces, patternNames, "piece-"],
+    [positions, positionNames, "position-"],
+    [rotations, rotationNames, "rotation-"]
+  ];
+
+  for (let i = 0; i < values.length; i++) { // generate checkboxes
+    let place = values[i][0];
+    let list = values[i][1];
+    let addToId = values[i][2];
+    for (let j = list.length - 1; j >= 0; j--) {
+      let element = document.createElement("a");
+      element.setAttribute("id", addToId + list[j]);
+      element.setAttribute("href", "javascript:toggleSetting('ID')".replace(/ID/g, element.id));
+      element.classList.add("unchecked");
+      element.innerHTML = list[j];
+
+      // if piece, color it like the piece
+      if (place === pieces) {
+        let css = "#ID.checked {background-color: BG1; color: FG1} #ID.unchecked {background-color: BG2; color: FG2}".replace(/ID/g, element.id).replace(/BG1/g, colors[patternNames.indexOf(list[j])]).replace(/FG1/g, colors_[patternNames.indexOf(list[j])]).replace(/BG2/g, colors[patternNames.length]).replace(/FG2/g, colors_[patternNames.length])
+        style.appendChild(document.createTextNode(css));
+      }
+
+      div.insertBefore(element, place.nextSibling);
+    }
+  }
+}
+
+function addKeysSettingsToHTML() {
+  let element, k;
+  k = Object.keys(keys);
+  for (let i = 0; i < k.length; i++) {
+    element = document.createElement("label");
+    element.for = k[i];
+    element.innerHTML = keysNames[k[i]];
+    settingsForm.appendChild(element);
+    element = document.createElement("input");
+    element.type = "text";
+    element.id = k[i];
+    element.value = keys[k[i]];
+    settingsForm.appendChild(element);
+    element = document.createElement("br");
+    settingsForm.appendChild(element);
+  }
+}
+
+function addKeysListeners() {
+  let k = Object.keys(keys);
+  for (let i = 0; i < k.length; i++) {
+    document.getElementById(k[i]).addEventListener("keydown", editKey);
+  }
+}
+
+function removeKeysListeners() {
+  let k = Object.keys(keys);
+  for (let i = 0; i < k.length; i++) {
+    document.getElementById(k[i]).removeEventListener("keydown", editKey);
+  }
+}
+
+function editKey(event) {
+  let id = document.activeElement.id;
+  let valid = (event.key !== ";"); // can't use ; character
+
+  function updateKey() {
+    if (valid) {
+    	document.activeElement.value = event.key;
+    } else {
+    	document.activeElement.value = "Unusable character";
+    }
+  }
+
+  function resetKey() {
+    document.activeElement.value = keys[id];
+  }
+
+	if (valid) {
+  	keys[id] = event.key;
+  } else {
+	 	window.setTimeout(resetKey, 1000);
+  }
+ 	window.setTimeout(updateKey, 1);
+}
+
+function toggleSetting(id) {
+  let caller = document.getElementById(id);
+  if (caller.classList.contains("checked")) {
+    caller.classList.add("unchecked");
+    caller.classList.remove("checked");
+  } else {
+    caller.classList.add("checked");
+    caller.classList.remove("unchecked");
+  }
+}
+
+function start() {
+  canvas = new Canvas();
+  toggleMessage = document.getElementById("toggle-message");
+  mobileControlsDiv = document.getElementById("mobile-controls-div");
+  tipsP = document.getElementById("tips");
+  totalFinesseP = document.getElementById("total-finesse");
+  totalPiecesP = document.getElementById("total-pieces");
+  ppsP = document.getElementById("pps");
+  stopButton = document.getElementById("stop");
+  adDiv = document.getElementById("ad");
+  settingsButton = document.getElementById("settings-button");
+  settingsDiv = document.getElementById("keys-settings");
+  settingsForm = document.getElementById("keys-settings-form");
+  helpDiv = document.getElementById("help");
+  cookiePopup = document.getElementById("cookie-popup");
+
+  addSettingsToHTML();
+  addKeysSettingsToHTML();
+  openCookies();
+  if (cookiePopupOk) {
+  	hideCookiePopup();
+  }
+
+  restart();
+}
+
+function restart() {
+  function findId() { // find available id in threads
+    let keys = Object.keys(threads);
+    let i = 0;
+    while (keys.includes(i)) {
+      i++;
+    }
+    return i;
+  }
+
+  stop();
+
+  if (newGoal()) { // found a valid piece
+    let id = findId();
+    threads[id] = true; // allow a new thread to start
+    gameFrame(id);
+  }
+
+  whenPlaced = [];
+  stopButton.classList = "pseudo-button";
+  stopButton.innerHTML = "Stop";
+}
+
+function stop() {
+  let keys = Object.keys(threads);
+  for (let i = 0; i < keys.length; i++) { // index backwards in case deletion happens in the process
+    
