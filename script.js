@@ -911,6 +911,12 @@ function openCookies() {
     if (preferences.cookiePopupOk === "true") {
     	cookiePopupOk = true;
     }
+    if (preferences.DAS !== undefined) {
+    	DAS = preferences.DAS;
+    }
+    if (preferences.ARR !== undefined) {
+    	ARR = preferences.ARR;
+    }
 
     for (let i = 0; i < positionChoice.length; i++) { // convert positions to integers + shift them
       positionChoice[i] = parseInt(positionChoice[i]) - 1; // stored as 0 - 9 instead of -1 - 8
@@ -945,6 +951,8 @@ function saveCookies() {
   
   // others
   document.cookie = "cookiePopupOk=" + cookiePopupOk + end;
+  document.cookie = "DAS=" + DAS + end;
+  document.cookie = "ARR=" + ARR + end;
 }
 
 function hideCookiePopup() {
