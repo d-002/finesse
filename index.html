@@ -27,12 +27,7 @@
       </div>
 
       <h2>Piece settings</h2>
-      <form id="settings-form" action="javascript:updateSettings(true)">
-        <input id="DAS" value="133" ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57" required>
-        <label for="DAS">DAS (ms)</label><br>
-        <input id="ARR" value="0" ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57" required>
-        <label for="ARR">ARR (ms)</label><br>
-
+      <form id="settings-form" action="javascript:updateSettings()">
         <h3 id="allowed-pieces">Allowed pieces</h3><br>
         <h3 id="allowed-positions">Allowed horizontal positions</h3><br>
         <h3 id="allowed-rotations">Allowed rotations</h3><br>
@@ -59,6 +54,14 @@
       <button linked-action="rotateCW">&#8631;</button>
     </div>
 
+    <div id="cookie-popup" class="invisible">
+      <p>
+      This webpage uses cookies to save your preferences.
+      <a href="javascript:openHelp()" class="pseudo-button">Learn more</a>
+      <a href="javascript:hideCookiePopup()" class="pseudo-button">Got it</a>
+      </p>
+    </div>
+
     <div id="ad" class="invisible">
       <div id="ad-inner" class="invisible">
         <a href="https://www.youtube.com/channel/UCaIXBey935UVtn8Dm1DF_QQ/" target="_blank"><img src="https://yt3.ggpht.com/ytc/AKedOLRJDu7qwF0q--FsWRnJ69k0osTkCO7gvwTFNAEf=s88-c-k-c0x00ffffff-no-rj" width=66 height=66></a>
@@ -72,23 +75,23 @@
 
     <div id="keys-settings" class="invisible">
       <div id="keys-settings-inner">
-        <h1>Keys settings</h1>
+        <h1>Handling settings</h1>
+        <h2>Keybinds</h2>
         <p>Click in a box and press a key to change its value</p>
         <form action="javascript:1" id="keys-settings-form">
+        </form>
 
+        <h2>Other</h2>
+        <form>
+          <label for="DAS">DAS (ms)</label>
+          <input id="DAS" value="133" ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57" required><br>
+          <label for="ARR">ARR (ms)</label>
+          <input id="ARR" value="0" ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57" required><br>
         </form>
         <div class="invisible">
           <a href="javascript:closeKeysSettings()" class="pseudo-button">Save and close</a>
         </div>
       </div>
-    </div>
-
-    <div id="cookie-popup" class="invisible">
-      <p>
-      This webpage uses cookies to save your preferences.
-      <a href="javascript:openHelp()" class="pseudo-button">Learn more</a>
-      <a href="javascript:hideCookiePopup()" class="pseudo-button">Got it</a>
-      </p>
     </div>
 
     <div id="help" class="invisible">
