@@ -416,10 +416,6 @@ function hexToRGBA(hex, alpha) { // hex needs to be 6 digits
 }
 
 function updateSettings() {
-  let DAS_ = document.getElementById("DAS");
-  let ARR_ = document.getElementById("ARR");
-  DAS = parseInt(DAS_.value); // ms
-  ARR = parseInt(ARR_.value); // ms
   pieceChoice = [];
   positionChoice = [];
   rotationChoice = [];
@@ -444,6 +440,13 @@ function updateSettings() {
 
   saveCookies();
   restart(); // restart to see the changes
+}
+
+function updateDASSettings() {
+  let DAS_ = document.getElementById("DAS");
+  let ARR_ = document.getElementById("ARR");
+  DAS = parseInt(DAS_.value); // ms
+  ARR = parseInt(ARR_.value); // ms
 }
 
 function updateSettingsInHTML() {
@@ -595,6 +598,7 @@ function start() {
   addSettingsToHTML();
   addKeysSettingsToHTML();
   openCookies();
+  updateDASSettings();
   if (cookiePopupOk) {
   	hideCookiePopup();
   }
@@ -844,6 +848,7 @@ function openKeysSettings() {
 function closeKeysSettings() {
   settingsDiv.style.display = "none";
   removeKeysListeners();
+  updateDASSettings();
   saveCookies();
   restart();
 }
@@ -908,7 +913,7 @@ function openCookies() {
     }
 
     for (let i = 0; i < positionChoice.length; i++) { // convert positions to integers + shift them
-      positionChoice[i] = parseInt(positionChoice[i]) - 1;
+      positionChoice[i] = parseInt(positionChoice[i]) - 1; // stored as 0 - 9 instead of -1 - 8
     }
   } else { // no cookies saved: create them and leave everything as default
     console.log("Could not retrieve any cookies");
