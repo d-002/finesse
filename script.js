@@ -543,12 +543,26 @@ function removeKeysListeners() {
 
 function editKey(event) {
   let id = document.activeElement.id;
+  let valid = (event.key !== ";"); // can't use ; character
 
   function updateKey() {
+    if (valid) {
+    	document.activeElement.value = event.key;
+    } else {
+    	document.activeElement.value = "Unusable character";
+    }
+  }
+
+  function resetKey() {
     document.activeElement.value = keys[id];
   }
-  keys[id] = event.key;
-  window.setTimeout(updateKey, 1);
+
+	if (valid) {
+  	keys[id] = event.key;
+  } else {
+	 	window.setTimeout(resetKey, 1000);
+  }
+ 	window.setTimeout(updateKey, 1);
 }
 
 function toggleSetting(id) {
@@ -916,13 +930,12 @@ function saveCookies() {
   }
 
   // piece settings
-  console.log(positionChoice.length);
   let positionChoice_ = "";
   for (let i = 0; i < positionChoice.length; i++) {
-  	positionChoice_ += positionChoice[i];
+  	positionChoice_ += positionChoice[i] + 1;
   }
-  document.cookie = "pieces=" + pieceChoice.join() + end;
-  document.cookie = "positions=" + positionChoice_.join("") + end;
+  document.cookie = "pieces=" + pieceChoice.join("") + end;
+  document.cookie = "positions=" + positionChoice_ + end;
   document.cookie = "rotations=" + rotationChoice.join("") + end;
   
   // others
