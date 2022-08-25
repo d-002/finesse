@@ -415,7 +415,7 @@ function hexToRGBA(hex, alpha) { // hex needs to be 6 digits
   }
 }
 
-function updateSettings(fromButton) {
+function updateSettings() {
   let DAS_ = document.getElementById("DAS");
   let ARR_ = document.getElementById("ARR");
   DAS = parseInt(DAS_.value); // ms
@@ -442,38 +442,16 @@ function updateSettings(fromButton) {
     }
   }
 
-  // rotation needs to be 0/1/2/3 instead of N/E/S/W
-  values = [
-    ["N", 0],
-    ["E", 1],
-    ["S", 2],
-    ["W", 3]
-  ]; // [to replace, with what]
-  for (let i = 0; i < values.length; i++) {
-    let from = values[i][0];
-    let to = values[i][1];
-    let index = rotationChoice.indexOf(from);
-    if (index !== -1) {
-      rotationChoice[index] = to;
-    }
-  }
-
-  if (fromButton) {
-    saveCookies();
-    restart(); // restart to see the changes
-  }
+  saveCookies();
+  restart(); // restart to see the changes
 }
 
 function updateSettingsInHTML() {
   // [list to check if selected, list to get the names from, string to add before id]
-  let rotationChoiceStr = [];
-  for (let i = 0; i < rotationChoice.length; i++) {
-    rotationChoiceStr.push(rotationNames[rotationChoice[i]]);
-  }
   let values = [
     [pieceChoice, patternNames, "piece-"],
     [positionChoice, positionNames, "position-"],
-    [rotationChoiceStr, rotationNames, "rotation-"]
+    [rotationChoice, rotationNames, "rotation-"]
   ];
 
   for (let i = 0; i < values.length; i++) { // update checkboxes
@@ -602,7 +580,6 @@ function start() {
 
   addSettingsToHTML();
   addKeysSettingsToHTML();
-  updateSettings(false);
   openCookies();
   if (cookiePopupOk) {
   	hideCookiePopup();
@@ -667,7 +644,7 @@ function newGoal() {
 
       rotationChoice_ = [];
       for (let i = 0; i < rotationChoice.length; i++) {
-        let r = rotationChoice[i];
+        let r = rotationNames.indexOf(rotationChoice[i]);
         if (finesse[pieceName][pos[0].toString()][r] !== null) {
           rotationChoice_.push(r); // only allow rotations contained in this position finesse
         }
@@ -871,120 +848,89 @@ function deleteAllCookies() {
   var cookies = document.cookie.split(";");
 
   for (var i = 0; i < cookies.length; i++) {
-    document.cookie = cookie.split("=")[0] + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+    document.cookie = cookies.split("=")[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
   }
 }
 
 function openCookies() {
-  if (document.cookie !== "") {
+	// defaults, when a cookie is non-existent or missing
+	pieceChoice = [...patternNames];
+  positionChoice = [...positionNames];
+  rotationChoice = [...rotationNames];
+
+	if (document.cookie !== "") {
     let keysValues = document.cookie.replace(/ /g, "").split(";");
+    keysValues = "left=q; right=d; hardDrop=s; rotateCCW=ArrowLeft; rotateCW=ArrowRight; rotate180=ArrowDown; cookiePopupOk=true; pieces=OTJLSZI; positions=0123456789; rotations=NESW".replace(/ /g, "").split(";");
     let preferences = {};
+    let keys_ = [];
     for (let i = 0; i < keysValues.length; i++) {
       let key = keysValues[i].split("=")[0];
       let value = keysValues[i].split("=")[1];
-      if (key !== "expires" && key !== "path") {
-        preferences[key] = value;
+      preferences[key] = value;
+      keys_.push(key);
+    }
+
+    // handling
+    let keysOfKeys = Object.keys(keys);
+    for (let i = 0; i < keysOfKeys.length; i++) {
+    	if (preferences[keysOfKeys[i]] !== undefined) {
+      	keys[keysOfKeys[i]] = preferences[keysOfKeys[i]];
       }
     }
 
-    // assign each value
-    let toAdd;
-    let keys_ = Object.keys(preferences);
-    let keysKeys = Object.keys(keys);
-    for (let i = 0; i < keys_.length; i++) {
-      // first, add to the keys dictionary
-      toAdd = undefined;
-      if (keysKeys.includes(keys_[i])) {
-        toAdd = keys;
-      }
-      if (toAdd !== undefined) {
-        toAdd[keys_[i]] = preferences[keys_[i]];
-      }
-
-      // then, add to the piece settings lists
-      if (preferences[keys_[i]] === "true") {
-        toAdd = undefined;
-        if (keys_[i].startsWith("piece")) {
-          toAdd = pieceChoice;
-        } else if (keys_[i].startsWith("position")) {
-          toAdd = positionChoice;
-        } else if (keys_[i].startsWith("rotation")) {
-          toAdd = rotationChoice;
-        }
-        if (toAdd !== undefined) {
-          let index = keys_[i].indexOf("-");
-          toAdd.push(keys_[i].slice(index + 1));
-        }
-      }
+    // piece settings
+    if (keys_.includes("pieces")) {
+    	pieceChoice = preferences.pieces.split("");
     }
-    
-    // then, others
+    if (keys_.includes("positions")) {
+    	positionChoice = preferences.positions.split("");
+    }
+    if (keys_.includes("rotations")) {
+    	rotationChoice = preferences.rotations.split("");
+    }
+
+		// others
     if (preferences.cookiePopupOk === "true") {
-    	alert(1);
-      hideCookiePopup();
+    	cookiePopupOk = true;
     }
 
-    // convert positions to integers
-    for (let i = 0; i < positionChoice.length; i++) {
-      positionChoice[i] = parseInt(positionChoice[i]);
+    for (let i = 0; i < positionChoice.length; i++) { // convert positions to integers + shift them
+      positionChoice[i] = parseInt(positionChoice[i]) - 1;
     }
-    // convert rotations to integers
-    for (let i = 0; i < rotationChoice.length; i++) {
-      rotationChoice[i] = rotationNames.indexOf(rotationChoice[i]);
-    }
-  } else { // no cookies saved: save them and leave everything on (in saveSettingsToHTML)
+  } else { // no cookies saved: create them and leave everything as default
     console.log("Could not retrieve any cookies");
-    pieceChoice = [...patternNames];
-    positionChoice = [...positionNames];
-    rotationChoice = [];
-    for (let i = 0; i < rotationNames.length; i++) {
-    	rotationChoice.push(i);
-    }
     saveCookies(); // update cookies
   }
   updateSettingsInHTML();
 }
 
 function saveCookies() {
-  let date = new Date(Date.now() + 2592000000);
-  let end = ";expires=" + date.toGMTString() + ";path=/"
+  let date = new Date(Date.now() + 2592000000); // expires in 30 days
+  let end = "; expires=" + date.toGMTString() + "; path=/"
 
-  // add keybinds
+	deleteAllCookies(); // begin fresh
+
+	// handling
   let keys_ = Object.keys(keys);
   for (let i = 0; i < keys_.length; i++) {
     document.cookie = keys_[i] + "=" + keys[keys_[i]] + end;
   }
 
-  let rotationChoiceStr = [];
-  for (let i = 0; i < rotationChoice.length; i++) {
-    rotationChoiceStr.push(rotationNames[rotationChoice[i]]);
+  // piece settings
+  console.log(positionChoice.length);
+  let positionChoice_ = "";
+  for (let i = 0; i < positionChoice.length; i++) {
+  	positionChoice_ += positionChoice[i];
   }
-  // [list to read from, possible values, add to variable name]
-  let values = [
-    [pieceChoice, patternNames, "piece-"],
-    [positionChoice, positionNames, "position-"],
-    [rotationChoiceStr, rotationNames, "rotation-"]
-  ];
-
-  for (let i = 0; i < values.length; i++) {
-    let list = values[i][0];
-    let possibleValues = values[i][1];
-    let addToVar = values[i][2];
-
-    for (let j = 0; j < possibleValues.length; j++) {
-      let value = false;
-      if (list.includes(possibleValues[j])) {
-        value = true;
-      }
-      document.cookie = addToVar + possibleValues[j] + "=" + value + end;
-    }
-  }
+  document.cookie = "pieces=" + pieceChoice.join() + end;
+  document.cookie = "positions=" + positionChoice_.join("") + end;
+  document.cookie = "rotations=" + rotationChoice.join("") + end;
   
+  // others
   document.cookie = "cookiePopupOk=" + cookiePopupOk + end;
 }
 
 function hideCookiePopup() {
-	cookiePopupOk = true;
   cookiePopup.style.display = "none";
   saveCookies();
 }
