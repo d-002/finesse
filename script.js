@@ -1,4 +1,4 @@
-let canvas, toggleMessage, mobileControlsDiv, stopButton, tips, totalFinesseP, totalPiecesP, ppsP, mobileButtons, adDiv, settingsButton, settingsDiv, settingsForm, helpDiv, cookiePopup;
+let canvas, toggleMessage, mobileControlsDiv, stopButton, tips, totalFinesseP, totalPiecesP, ppsP, mobileButtons, adDiv, settingsButton, applyButton, settingsDiv, settingsForm, helpDiv, cookiePopup;
 let device, threads, patterns, patternNames, rotationNames, colors, colors_, piece, pressed, keysQueue, keys, DAS, ARR, pieceChoice, positionChoice, rotationChoice, goal, scores, totalFinesse, finesse, finesseCodes, nPieces, whenPlaced, cookiePopupOk;
 device = "Desktop";
 threads = {}; // thread id: isRunning
@@ -438,6 +438,7 @@ function updateSettings() {
     }
   }
 
+  applyButton.className = "input-button";
   saveCookies();
   restart(); // restart to see the changes
 }
@@ -584,6 +585,7 @@ function toggleSetting(id) {
     caller.classList.add("checked");
     caller.classList.remove("unchecked");
   }
+  applyButton.classList.add("red");
 }
 
 function start() {
@@ -595,6 +597,7 @@ function start() {
   totalPiecesP = document.getElementById("total-pieces");
   ppsP = document.getElementById("pps");
   stopButton = document.getElementById("stop");
+  applyButton = document.getElementById("apply");
   adDiv = document.getElementById("ad");
   settingsButton = document.getElementById("settings-button");
   settingsDiv = document.getElementById("keys-settings");
@@ -937,6 +940,7 @@ function openCookies() {
     saveCookies(); // update cookies
   }
   updateSettingsInHTML();
+  applyButton.className = "input-button";
 }
 
 function saveCookies() {
