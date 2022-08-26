@@ -79,6 +79,31 @@ div:not(.invisible) {
   justify-content: space-around;
 }
 
+.input-button {
+  /* input type="submit" */
+  border: 2px solid #aaa;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  width: 90%;
+  text-align: center;
+  margin: 10px;
+  display: block;
+  font-size: 14px;
+  padding: 10px;
+  color: #9a9a9b;
+  background-color: #3a3d45;
+  cursor: pointer;
+}
+
+.input-button:hover {
+  border-color: #fff;
+  color: #dcddde;
+}
+
+.input-button:active {
+  color: #fff;
+}
+
 .pseudo-button {
   /* a */
   border: 2px solid #aaa;
@@ -169,31 +194,6 @@ a.unchecked {
   padding: 2px 5px 2px 5px;
   color: #eb4f65;
   text-decoration: none;
-}
-
-.input-button {
-  /* input type="submit" */
-  border: 2px solid #aaa;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
-  width: 90%;
-  text-align: center;
-  margin: 10px;
-  display: block;
-  font-size: 14px;
-  padding: 10px;
-  color: #9a9a9b;
-  background-color: #3a3d45;
-  cursor: pointer;
-}
-
-.input-button:hover {
-  border-color: #fff;
-  color: #dcddde;
-}
-
-.input-button:active {
-  color: #fff;
 }
 
 #ad {
