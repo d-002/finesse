@@ -415,7 +415,11 @@ function hexToRGBA(hex, alpha) { // hex needs to be 6 digits
   }
 }
 
-function updateSettings() {
+function updateSettings(fromButton) {
+  let DAS_ = document.getElementById("DAS");
+  let ARR_ = document.getElementById("ARR");
+  DAS = parseInt(DAS_.value); // ms
+  ARR = parseInt(ARR_.value); // ms
   pieceChoice = [];
   positionChoice = [];
   rotationChoice = [];
@@ -438,27 +442,41 @@ function updateSettings() {
     }
   }
 
-  saveCookies();
-  restart(); // restart to see the changes
-}
+  // rotation needs to be 0/1/2/3 instead of N/E/S/W
+  values = [
+    ["N", 0],
+    ["E", 1],
+    ["S", 2],
+    ["W", 3]
+  ]; // [to replace, with what]
+  for (let i = 0; i < values.length; i++) {
+    let from = values[i][0];
+    let to = values[i][1];
+    let index = rotationChoice.indexOf(from);
+    if (index !== -1) {
+      rotationChoice[index] = to;
+    }
+  }
 
-function updateDASSettings() {
-  let DAS_ = document.getElementById("DAS");
-  let ARR_ = document.getElementById("ARR");
-  DAS = parseInt(DAS_.value); // ms
-  ARR = parseInt(ARR_.value); // ms
+  if (fromButton) {
+    saveCookies();
+    restart(); // restart to see the changes
+  }
 }
 
 function updateSettingsInHTML() {
   // [list to check if selected, list to get the names from, string to add before id]
+  let rotationChoiceStr = [];
+  for (let i = 0; i < rotationChoice.length; i++) {
+    rotationChoiceStr.push(rotationNames[rotationChoice[i]]);
+  }
   let values = [
     [pieceChoice, patternNames, "piece-"],
     [positionChoice, positionNames, "position-"],
-    [rotationChoice, rotationNames, "rotation-"]
+    [rotationChoiceStr, rotationNames, "rotation-"]
   ];
 
-	// update piece settings checkboxes
-  for (let i = 0; i < values.length; i++) {
+  for (let i = 0; i < values.length; i++) { // update checkboxes
     let listSelected = values[i][0];
     let listNames = values[i][1];
     let addToId = values[i][2];
@@ -471,12 +489,6 @@ function updateSettingsInHTML() {
         toggleSetting(element.id); // uncheck element
       }
     }
-  }
-  
-  // update keybinds
-  let keys_ = Object.keys(keys);
-  for (let i = 0; i < keys_.length; i++) {
-  	document.getElementById(keys_[i]).value = keys[keys_[i]];
   }
 }
 
@@ -520,17 +532,17 @@ function addSettingsToHTML() {
 }
 
 function addKeysSettingsToHTML() {
-  let element, keys_;
-  keys_ = Object.keys(keys);
-  for (let i = 0; i < keys_.length; i++) {
+  let element, k;
+  k = Object.keys(keys);
+  for (let i = 0; i < k.length; i++) {
     element = document.createElement("label");
-    element.for = keys_[i];
-    element.innerHTML = keysNames[keys_[i]];
+    element.for = k[i];
+    element.innerHTML = keysNames[k[i]];
     settingsForm.appendChild(element);
     element = document.createElement("input");
     element.type = "text";
-    element.id = keys_[i];
-    element.value = keys[keys_[i]];
+    element.id = k[i];
+    element.value = keys[k[i]];
     settingsForm.appendChild(element);
     element = document.createElement("br");
     settingsForm.appendChild(element);
@@ -538,41 +550,27 @@ function addKeysSettingsToHTML() {
 }
 
 function addKeysListeners() {
-  let keys_ = Object.keys(keys);
-  for (let i = 0; i < keys_.length; i++) {
-    document.getElementById(keys_[i]).addEventListener("keydown", editKey);
+  let k = Object.keys(keys);
+  for (let i = 0; i < k.length; i++) {
+    document.getElementById(k[i]).addEventListener("keydown", editKey);
   }
 }
 
 function removeKeysListeners() {
-  let keys_ = Object.keys(keys);
-  for (let i = 0; i < keys_.length; i++) {
-    document.getElementById(keys_[i]).removeEventListener("keydown", editKey);
+  let k = Object.keys(keys);
+  for (let i = 0; i < k.length; i++) {
+    document.getElementById(k[i]).removeEventListener("keydown", editKey);
   }
 }
 
 function editKey(event) {
   let id = document.activeElement.id;
-  let valid = (event.key !== ";"); // can't use ; character
 
   function updateKey() {
-    if (valid) {
-    	document.activeElement.value = event.key;
-    } else {
-    	document.activeElement.value = "Unusable character";
-    }
-  }
-
-  function resetKey() {
     document.activeElement.value = keys[id];
   }
-
-	if (valid) {
-  	keys[id] = event.key;
-  } else {
-	 	window.setTimeout(resetKey, 1000);
-  }
- 	window.setTimeout(updateKey, 1);
+  keys[id] = event.key;
+  window.setTimeout(updateKey, 1);
 }
 
 function toggleSetting(id) {
@@ -602,9 +600,9 @@ function start() {
   helpDiv = document.getElementById("help");
   cookiePopup = document.getElementById("cookie-popup");
 
-  updateDASSettings();
   addSettingsToHTML();
   addKeysSettingsToHTML();
+  updateSettings(false);
   openCookies();
   if (cookiePopupOk) {
   	hideCookiePopup();
@@ -669,7 +667,7 @@ function newGoal() {
 
       rotationChoice_ = [];
       for (let i = 0; i < rotationChoice.length; i++) {
-        let r = rotationNames.indexOf(rotationChoice[i]);
+        let r = rotationChoice[i];
         if (finesse[pieceName][pos[0].toString()][r] !== null) {
           rotationChoice_.push(r); // only allow rotations contained in this position finesse
         }
@@ -713,7 +711,7 @@ function gameFrame(id, length = 1) {
     canvas.draw();
     goal.draw();
     piece.draw();
-    //drawPPS();
+    drawPPS();
   }
 
   if (placed) {
@@ -855,7 +853,6 @@ function openKeysSettings() {
 function closeKeysSettings() {
   settingsDiv.style.display = "none";
   removeKeysListeners();
-  updateDASSettings();
   saveCookies();
   restart();
 }
@@ -874,100 +871,119 @@ function deleteAllCookies() {
   var cookies = document.cookie.split(";");
 
   for (var i = 0; i < cookies.length; i++) {
-    document.cookie = cookies[i].split("=")[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+    document.cookie = cookie.split("=")[0] + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
   }
 }
 
 function openCookies() {
-	// defaults, when a cookie is non-existent or missing
-	pieceChoice = [...patternNames];
-  positionChoice = [...positionNames];
-  rotationChoice = [...rotationNames];
-
-	if (document.cookie !== "") {
-    let cookie = document.cookie.replace(/ /g, "").split(";");
+  if (document.cookie !== "") {
+    let keysValues = document.cookie.replace(/ /g, "").split(";");
     let preferences = {};
-    let keys_ = [];
-    for (let i = 0; i < cookie.length; i++) {
-      let key = cookie[i].split("=")[0];
-      let value = cookie[i].split("=")[1];
-      preferences[key] = value;
-      keys_.push(key);
-    }
-
-    // handling
-    let keysOfKeys = Object.keys(keys);
-    for (let i = 0; i < keysOfKeys.length; i++) {
-    	if (preferences[keysOfKeys[i]] !== undefined) {
-      	keys[keysOfKeys[i]] = preferences[keysOfKeys[i]];
+    for (let i = 0; i < keysValues.length; i++) {
+      let key = keysValues[i].split("=")[0];
+      let value = keysValues[i].split("=")[1];
+      if (key !== "expires" && key !== "path") {
+        preferences[key] = value;
       }
     }
 
-    // piece settings
-    if (keys_.includes("pieces")) {
-    	pieceChoice = preferences.pieces.split("");
-    }
-    if (keys_.includes("positions")) {
-    	positionChoice = preferences.positions.split("");
-    }
-    if (keys_.includes("rotations")) {
-    	rotationChoice = preferences.rotations.split("");
-    }
+    // assign each value
+    let toAdd;
+    let keys_ = Object.keys(preferences);
+    let keysKeys = Object.keys(keys);
+    for (let i = 0; i < keys_.length; i++) {
+      // first, add to the keys dictionary
+      toAdd = undefined;
+      if (keysKeys.includes(keys_[i])) {
+        toAdd = keys;
+      }
+      if (toAdd !== undefined) {
+        toAdd[keys_[i]] = preferences[keys_[i]];
+      }
 
-		// others
+      // then, add to the piece settings lists
+      if (preferences[keys_[i]] === "true") {
+        toAdd = undefined;
+        if (keys_[i].startsWith("piece")) {
+          toAdd = pieceChoice;
+        } else if (keys_[i].startsWith("position")) {
+          toAdd = positionChoice;
+        } else if (keys_[i].startsWith("rotation")) {
+          toAdd = rotationChoice;
+        }
+        if (toAdd !== undefined) {
+          let index = keys_[i].indexOf("-");
+          toAdd.push(keys_[i].slice(index + 1));
+        }
+      }
+    }
+    
+    // then, others
     if (preferences.cookiePopupOk === "true") {
-    	cookiePopupOk = true;
-    }
-    if (preferences.DAS !== undefined) {
-    	DAS = parseInt(preferences.DAS);
-		  let DAS_ = document.getElementById("DAS");
-      DAS_.value = DAS;
-    }
-    if (preferences.ARR !== undefined) {
-    	ARR = parseInt(preferences.ARR);
-	  	let ARR_ = document.getElementById("ARR");
-      ARR_.value = ARR;
+      hideCookiePopup();
     }
 
-    for (let i = 0; i < positionChoice.length; i++) { // convert positions to integers + shift them
-      positionChoice[i] = parseInt(positionChoice[i]) - 1; // stored as 0 - 9 instead of -1 - 8
+    // convert positions to integers
+    for (let i = 0; i < positionChoice.length; i++) {
+      positionChoice[i] = parseInt(positionChoice[i]);
     }
-  } else { // no cookies saved: create them and leave everything as default
+    // convert rotations to integers
+    for (let i = 0; i < rotationChoice.length; i++) {
+      rotationChoice[i] = rotationNames.indexOf(rotationChoice[i]);
+    }
+  } else { // no cookies saved: save them and leave everything on (in saveSettingsToHTML)
     console.log("Could not retrieve any cookies");
+    pieceChoice = [...patternNames];
+    positionChoice = [...positionNames];
+    rotationChoice = [];
+    for (let i = 0; i < rotationNames.length; i++) {
+    	rotationChoice.push(i);
+    }
     saveCookies(); // update cookies
   }
   updateSettingsInHTML();
 }
 
 function saveCookies() {
-  let date = new Date(Date.now() + 2592000000); // expires in 30 days
-  let end = "; expires=" + date.toGMTString() + "; path=/"
+  let date = new Date(Date.now() + 2592000000);
+  let end = ";expires=" + date.toGMTString() + ";path=/"
 
-	deleteAllCookies(); // begin fresh
-
-	// handling
+  // add keybinds
   let keys_ = Object.keys(keys);
   for (let i = 0; i < keys_.length; i++) {
     document.cookie = keys_[i] + "=" + keys[keys_[i]] + end;
   }
 
-  // piece settings
-  let positionChoice_ = "";
-  for (let i = 0; i < positionChoice.length; i++) {
-  	positionChoice_ += positionChoice[i] + 1;
+  let rotationChoiceStr = [];
+  for (let i = 0; i < rotationChoice.length; i++) {
+    rotationChoiceStr.push(rotationNames[rotationChoice[i]]);
   }
-  document.cookie = "pieces=" + pieceChoice.join("") + end;
-  document.cookie = "positions=" + positionChoice_ + end;
-  document.cookie = "rotations=" + rotationChoice.join("") + end;
+  // [list to read from, possible values, add to variable name]
+  let values = [
+    [pieceChoice, patternNames, "piece-"],
+    [positionChoice, positionNames, "position-"],
+    [rotationChoiceStr, rotationNames, "rotation-"]
+  ];
+
+  for (let i = 0; i < values.length; i++) {
+    let list = values[i][0];
+    let possibleValues = values[i][1];
+    let addToVar = values[i][2];
+
+    for (let j = 0; j < possibleValues.length; j++) {
+      let value = false;
+      if (list.includes(possibleValues[j])) {
+        value = true;
+      }
+      document.cookie = addToVar + possibleValues[j] + "=" + value + end;
+    }
+  }
   
-  // others
   document.cookie = "cookiePopupOk=" + cookiePopupOk + end;
-  document.cookie = "DAS=" + DAS + end;
-  document.cookie = "ARR=" + ARR + end;
 }
 
 function hideCookiePopup() {
-	cookiePopupOk = true; // user when close button clicked
+	cookiePopupOk = true;
   cookiePopup.style.display = "none";
   saveCookies();
 }
