@@ -457,7 +457,8 @@ function updateSettingsInHTML() {
     [rotationChoice, rotationNames, "rotation-"]
   ];
 
-  for (let i = 0; i < values.length; i++) { // update checkboxes
+	// update piece settings checkboxes
+  for (let i = 0; i < values.length; i++) {
     let listSelected = values[i][0];
     let listNames = values[i][1];
     let addToId = values[i][2];
@@ -470,6 +471,12 @@ function updateSettingsInHTML() {
         toggleSetting(element.id); // uncheck element
       }
     }
+  }
+  
+  // update keybinds
+  let keys_ = Object.keys(keys);
+  for (let i = 0; i < keys_.length; i++) {
+  	document.getElementById(keys_[i]).value = keys[keys_[i]];
   }
 }
 
@@ -513,17 +520,17 @@ function addSettingsToHTML() {
 }
 
 function addKeysSettingsToHTML() {
-  let element, k;
-  k = Object.keys(keys);
-  for (let i = 0; i < k.length; i++) {
+  let element, keys_;
+  keys_ = Object.keys(keys);
+  for (let i = 0; i < keys_.length; i++) {
     element = document.createElement("label");
-    element.for = k[i];
-    element.innerHTML = keysNames[k[i]];
+    element.for = keys_[i];
+    element.innerHTML = keysNames[keys_[i]];
     settingsForm.appendChild(element);
     element = document.createElement("input");
     element.type = "text";
-    element.id = k[i];
-    element.value = keys[k[i]];
+    element.id = keys_[i];
+    element.value = keys[keys_[i]];
     settingsForm.appendChild(element);
     element = document.createElement("br");
     settingsForm.appendChild(element);
@@ -531,16 +538,16 @@ function addKeysSettingsToHTML() {
 }
 
 function addKeysListeners() {
-  let k = Object.keys(keys);
-  for (let i = 0; i < k.length; i++) {
-    document.getElementById(k[i]).addEventListener("keydown", editKey);
+  let keys_ = Object.keys(keys);
+  for (let i = 0; i < keys_.length; i++) {
+    document.getElementById(keys_[i]).addEventListener("keydown", editKey);
   }
 }
 
 function removeKeysListeners() {
-  let k = Object.keys(keys);
-  for (let i = 0; i < k.length; i++) {
-    document.getElementById(k[i]).removeEventListener("keydown", editKey);
+  let keys_ = Object.keys(keys);
+  for (let i = 0; i < keys_.length; i++) {
+    document.getElementById(keys_[i]).removeEventListener("keydown", editKey);
   }
 }
 
@@ -878,12 +885,12 @@ function openCookies() {
   rotationChoice = [...rotationNames];
 
 	if (document.cookie !== "") {
-    let keysValues = document.cookie.replace(/ /g, "").split(";");
+    let cookie = document.cookie.replace(/ /g, "").split(";");
     let preferences = {};
     let keys_ = [];
-    for (let i = 0; i < keysValues.length; i++) {
-      let key = keysValues[i].split("=")[0];
-      let value = keysValues[i].split("=")[1];
+    for (let i = 0; i < cookie.length; i++) {
+      let key = cookie[i].split("=")[0];
+      let value = cookie[i].split("=")[1];
       preferences[key] = value;
       keys_.push(key);
     }
