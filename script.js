@@ -912,12 +912,12 @@ function openCookies() {
     	cookiePopupOk = true;
     }
     if (preferences.DAS !== undefined) {
-    	DAS = preferences.DAS;
+    	DAS = parseInt(preferences.DAS);
 		  let DAS_ = document.getElementById("DAS");
       DAS_.value = DAS;
     }
     if (preferences.ARR !== undefined) {
-    	ARR = preferences.ARR;
+    	ARR = parseInt(preferences.ARR);
 	  	let ARR_ = document.getElementById("ARR");
       ARR_.value = ARR;
     }
