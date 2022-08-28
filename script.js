@@ -1,5 +1,5 @@
 let canvas, toggleMessage, mobileControlsDiv, stopButton, tips, totalFinesseP, totalPiecesP, ppsP, mobileButtons, adDiv, settingsButton, applyButton, settingsDiv, settingsForm, helpDiv, cookiePopup;
-let device, threads, patterns, patternNames, rotationNames, colors, colors_, piece, pressed, keysQueue, keys, DAS, ARR, pieceChoice, positionChoice, rotationChoice, goal, scores, totalFinesse, finesse, finesseCodes, nPieces, whenPlaced, cookiePopupOk;
+let device, threads, patterns, patternNames, rotationNames, colors, colors_, piece, pressed, keysQueue, keys, DAS, ARR, pieceChoice, positionChoice, rotationChoice, goal, scores, totalFinesse, finesse, finesseCodes, whenPlaced, cookiePopupOk;
 device = "Desktop";
 threads = {}; // thread id: isRunning
 mobileButtons = [];
@@ -36,7 +36,6 @@ keysNames = {
   "rotate180": "Rotate 180°"
 }
 totalFinesse = 0; // number of errors
-nPieces = 0; // number of placed pieces
 cookiePopupOk = false; // set to true when popup button clicked
 
 whenPlaced = []; // when each piece has been placed (used to calculate PPS)
@@ -634,6 +633,7 @@ function restart() {
     gameFrame(id);
   }
 
+  totalFinesse = 0;
   whenPlaced = [];
   stopButton.classList = "pseudo-button";
   stopButton.innerHTML = "Stop";
@@ -732,13 +732,12 @@ function gameFrame(id, length = 1) {
         showTips(finesse_);
       }
       score[1] += 1;
-      nPieces += 1;
+      whenPlaced.push(Date.now());
       totalFinesse += Math.max(piece.totalMoves.length - finesse_.length, 0);
       totalFinesseP.innerHTML = "Total finesse: " + totalFinesse;
-      totalPiecesP.innerHTML = "Total pieces: " + nPieces;
+      totalPiecesP.innerHTML = "Total pieces: " + whenPlaced.length;
       newGoal();
 
-      whenPlaced.push(Date.now());
     } else {
       piece = new Piece(goal.index); // retry
     }
