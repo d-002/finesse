@@ -782,7 +782,7 @@ function showTips(tipsCode) {
 function toggleDevice() {
   if (device === "Desktop") {
     device = "Mobile"; // toggle to mobile website
-    document.body.style.flexDirection = "column";
+    document.body.className = "mobile-body";
     canvas.canvas.style.margin = "20px auto 20px auto";
     canvas.canvas.style.width = "200px";
     canvas.canvas.style.height = "400px";
@@ -799,7 +799,7 @@ function toggleDevice() {
     }
   } else {
     device = "Desktop"; // toggle to desktop website
-    document.body.style.flexDirection = "row";
+    document.body.className = "";
     canvas.canvas.style.margin = "20px";
     canvas.canvas.style.width = "400px";
     canvas.canvas.style.height = "800px";
