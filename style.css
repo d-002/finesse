@@ -8,6 +8,10 @@ body {
   color: #fff;
 }
 
+.mobile-body {
+  margin-bottom: 50px;
+}
+
 input {
   /* reset mobile defaults */
   font-family: open sans, calibri, sans-serif;
