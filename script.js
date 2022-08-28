@@ -708,7 +708,7 @@ function drawPPS() {
 }
 
 function gameFrame(id, length = 1) {
-  let return_ = piece.update(); // returns information needed
+  let return_ = piece.update(); // will return information needed
   let placed = return_[0];
   let forceDraw = return_[1];
 
