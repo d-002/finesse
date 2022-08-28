@@ -8,6 +8,14 @@ body {
   color: #fff;
 }
 
+input {
+  /* reset mobile defaults */
+  font-family: open sans, calibri, sans-serif;
+  border-radius: 0;
+  font-weight: 0;
+  
+}
+
 canvas {
   width: 400px;
   height: 800px;
