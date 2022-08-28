@@ -226,7 +226,7 @@ a.unchecked {
 
 #keys-settings-inner,#help-inner {
   margin: auto;
-  max-width: 500px;
+  max-width: 800px;
   max-height: 80%;
   overflow: auto;
 }
