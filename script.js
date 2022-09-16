@@ -902,7 +902,7 @@ function openCookies() {
   rotationChoice = [...rotationNames];
 
 	if (document.cookie !== "") {
-    let cookie = document.cookie.split("; ");
+    let cookie = document.cookie.replaceAll("space", " ").split("; ");
     let preferences = {};
     let keys_ = [];
     for (let i = 0; i < cookie.length; i++) {
@@ -966,7 +966,11 @@ function saveCookies() {
 	// handling
   let keys_ = Object.keys(keys);
   for (let i = 0; i < keys_.length; i++) {
-    document.cookie = keys_[i] + "=" + keys[keys_[i]] + end;
+  let key = keys[keys_[i]];
+  if (key == " ") {
+  	key = "space";
+  } 
+    document.cookie = keys_[i] + "=" + key + end;
   }
 
   // piece settings
