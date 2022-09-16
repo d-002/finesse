@@ -731,6 +731,7 @@ function gameFrame(id, length = 1) {
   }
 
   if (placed) {
+	  let ok = false;
     if (piece.equals(goal)) { // correct position and rotation
       let finesse_, score;
       finesse_ = finesse[patternNames[goal.index]][goal.pos[0].toString()][goal.rotation];
@@ -739,6 +740,7 @@ function gameFrame(id, length = 1) {
       if (piece.totalMoves.length === finesse_.length) {
         tipsP.innerHTML = "Tips: -";
         score[0] += 1;
+        ok = true;
       } else {
         showTips(finesse_);
         totalFaultedPieces += 1;
@@ -748,8 +750,9 @@ function gameFrame(id, length = 1) {
       totalFinesse += Math.max(piece.totalMoves.length - finesse_.length, 0);
       totalFinesseP.innerHTML = "Finesse: " + totalFinesse + "F (" + parseInt(totalFaultedPieces*10000/whenPlaced.length)/100 + "%)";
       totalPiecesP.innerHTML = "Total pieces: " + whenPlaced.length;
+		}
+    if (ok) {
       newGoal();
-
     } else {
       piece = new Piece(goal.index); // retry
     }
