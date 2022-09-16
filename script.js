@@ -748,7 +748,7 @@ function gameFrame(id, length = 1) {
       score[1] += 1;
       whenPlaced.push(Date.now());
       totalFinesse += Math.max(piece.totalMoves.length - finesse_.length, 0);
-      totalFinesseP.innerHTML = "Finesse: " + totalFinesse + "F (" + parseInt(totalFaultedPieces*10000/whenPlaced.length)/100 + "%)";
+      totalFinesseP.innerHTML = "Finesse: " + totalFinesse + "F (" + parseInt((whenPlaced.length-totalFaultedPieces)*10000/whenPlaced.length)/100 + "%)";
       totalPiecesP.innerHTML = "Total pieces: " + whenPlaced.length;
 		}
     if (ok) {
