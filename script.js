@@ -795,7 +795,7 @@ function toggleDevice() {
     mobileControlsDiv.addEventListener("touchstart", handleTouchStart);
     mobileControlsDiv.addEventListener("touchend", handleTouchEnd);
     adDiv.style.display = "none";
-    settingsButton.style.display = "none";
+    settingsForm.style.display = "none";
 
     mobileButtons = [];
     let buttons = mobileControlsDiv.children;
@@ -812,7 +812,7 @@ function toggleDevice() {
     mobileControlsDiv.removeEventListener("touchstart", handleTouchStart);
     mobileControlsDiv.removeEventListener("touchend", handleTouchEnd);
     adDiv.style.display = "flex";
-    settingsButton.style.display = "block";
+    settingsForm.style.display = "block";
   }
 
   toggleMessage.innerHTML = device + " website -";
