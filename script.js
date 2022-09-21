@@ -300,32 +300,32 @@ class Piece {
 
     // rotation
     if (keysQueue[keys.rotateCCW]) {
+      playSound(rotateSFX);
       this.totalMoves += "c";
       for (let i = 0; i < 3; i++) {
         this.rotate();
-        playSound(rotateSFX);
       }
       if (this.collide()) {
         this.rotate();
       }
     }
     if (keysQueue[keys.rotateCW]) {
+      playSound(rotateSFX);
       this.totalMoves += "C";
       this.rotate();
       if (this.collide()) {
         for (let i = 0; i < 3; i++) {
           this.rotate();
-          playSound(rotateSFX);
         }
       } else {
         this.startMove = Date.now();
       }
     }
     if (keysQueue[keys.rotate180]) {
+      playSound(rotateSFX);
       this.totalMoves += "1";
       for (let i = 0; i < 2; i++) {
         this.rotate();
-        playSound(rotateSFX);
       }
       if (this.collide()) {
         for (let i = 0; i < 2; i++) {
