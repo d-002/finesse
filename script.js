@@ -296,7 +296,7 @@ class Piece {
       this.totalMoves += "l";
       this.left();
     }
-    if (keysQueue[keys.right]) {
+    else if (keysQueue[keys.right]) {
       this.totalMoves += "r";
       this.right();
     }
