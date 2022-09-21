@@ -25,7 +25,8 @@ keys = {
   "hardDrop": " ",
   "rotateCCW": "z",
   "rotateCW": "ArrowUp",
-  "rotate180": "a"
+  "rotate180": "a",
+  "restart": "F4"
 }; // assigned keys for each action
 keysNames = {
   "left": "Move mino left",
@@ -33,7 +34,8 @@ keysNames = {
   "hardDrop": "Hard drop mino",
   "rotateCCW": "Rotate counterclockwise",
   "rotateCW": "Rotate clockwise",
-  "rotate180": "Rotate 180°"
+  "rotate180": "Rotate 180°",
+  "restart": "Restart"
 }
 totalFinesse = 0; // number of errors
 totalFaultedPieces = 0; // number of finesse faulted pieces
@@ -776,6 +778,10 @@ function gameFrame(id, length = 1) {
     }
   }
 
+  if (keysQueue[keys.restart]) {
+  	window.setTimeout(restart, 0);
+  }
+  
   if (forceDraw === true) {
     length = 1;
   } else { // if no draw needed, only draw if action done
