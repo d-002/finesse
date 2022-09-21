@@ -224,9 +224,11 @@ class Piece {
     this.pos[0] -= 1;
     if (this.collide()) {
       this.pos[0] += 1;
-    } else if (fromKey) {
+    } else {
 	    playSound(moveSFX);
-      this.startMove = Date.now();
+	    if (fromKey) {
+  	    this.startMove = Date.now();
+      }
     }
   }
 
@@ -234,9 +236,11 @@ class Piece {
     this.pos[0] += 1;
     if (this.collide()) {
       this.pos[0] -= 1;
-    } else if (fromKey) {
+    } else {
 	    playSound(moveSFX);
-      this.startMove = Date.now();
+	    if (fromKey) {
+  	    this.startMove = Date.now();
+      }
     }
   }
 
