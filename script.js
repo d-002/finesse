@@ -1,5 +1,5 @@
 let canvas, toggleMessage, mobileControlsDiv, stopButton, tips, totalFinesseP, totalPiecesP, ppsP, mobileButtons, adDiv, settingsButton, applyButton, settingsDiv, settingsForm, helpDiv, cookiePopup;
-let device, threads, patterns, patternNames, rotationNames, colors, colors_, piece, pressed, keysQueue, keys, DAS, ARR, pieceChoice, positionChoice, rotationChoice, goal, scores, totalFinesse, totalFaultedPieces, finesse, finesseCodes, whenPlaced, cookiePopupOk;
+let device, threads, patterns, patternNames, rotationNames, colors, colors_, piece, pressed, keysQueue, keys, DAS, ARR, pieceChoice, positionChoice, rotationChoice, goal, scores, totalFinesse, totalFaultedPieces, finesse, finesseCodes, whenPlaced, cookiePopupOk, moveSFX, rotateSFX, dropSFX;
 device = "Desktop";
 threads = {}; // thread id: isRunning
 mobileButtons = [];
@@ -116,6 +116,10 @@ for (let pi = 0; pi < patternNames.length; pi++) { // for every piece
   }
 }
 
+moveSFX = new Audio("move.mp3");
+rotateSFX = new Audio("rotate.mp3");
+dropSFX = new Audio("drop.mp3");
+
 class Canvas {
   constructor() {
     this.canvas = document.getElementById("canvas");
@@ -215,6 +219,7 @@ class Piece {
   }
 
   left(fromKey = true) {
+    moveSFX.play();
     this.pos[0] -= 1;
     if (this.collide()) {
       this.pos[0] += 1;
@@ -224,6 +229,7 @@ class Piece {
   }
 
   right(fromKey = true) {
+    moveSFX.play();
     this.pos[0] += 1;
     if (this.collide()) {
       this.pos[0] -= 1;
@@ -233,6 +239,7 @@ class Piece {
   }
 
   hardDrop() {
+  	dropSFX.play()
     while (!this.collide()) {
       this.pos[1] += 1;
     }
@@ -297,6 +304,7 @@ class Piece {
       this.totalMoves += "c";
       for (let i = 0; i < 3; i++) {
         this.rotate();
+        rotateSFX.play();
       }
       if (this.collide()) {
         this.rotate();
@@ -308,6 +316,7 @@ class Piece {
       if (this.collide()) {
         for (let i = 0; i < 3; i++) {
           this.rotate();
+          rotateSFX.play();
         }
       } else {
         this.startMove = Date.now();
@@ -317,6 +326,7 @@ class Piece {
       this.totalMoves += "1";
       for (let i = 0; i < 2; i++) {
         this.rotate();
+        rotateSFX.play();
       }
       if (this.collide()) {
         for (let i = 0; i < 2; i++) {
