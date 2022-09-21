@@ -116,9 +116,18 @@ for (let pi = 0; pi < patternNames.length; pi++) { // for every piece
   }
 }
 
-moveSFX = new Audio("move.mp3");
-rotateSFX = new Audio("rotate.mp3");
-dropSFX = new Audio("drop.mp3");
+try {
+	moveSFX = new Audio("sounds/move.mp3");
+	rotateSFX = new Audio("sounds/rotate.mp3");
+	dropSFX = new Audio("sounds/drop.mp3");
+} catch(error) {
+	class EmptySound {
+  	play() {}
+  }
+	moveSFX = new EmptySound();
+	rotateSFX = new EmptySound();
+	dropSFX = new EmptySound();
+}
 
 class Canvas {
   constructor() {
