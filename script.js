@@ -219,21 +219,21 @@ class Piece {
   }
 
   left(fromKey = true) {
-    playSound(moveSFX);
     this.pos[0] -= 1;
     if (this.collide()) {
       this.pos[0] += 1;
     } else if (fromKey) {
+	    playSound(moveSFX);
       this.startMove = Date.now();
     }
   }
 
   right(fromKey = true) {
-    playSound(moveSFX);
     this.pos[0] += 1;
     if (this.collide()) {
       this.pos[0] -= 1;
     } else if (fromKey) {
+	    playSound(moveSFX);
       this.startMove = Date.now();
     }
   }
