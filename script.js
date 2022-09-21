@@ -116,18 +116,9 @@ for (let pi = 0; pi < patternNames.length; pi++) { // for every piece
   }
 }
 
-try {
-	moveSFX = new Audio("sounds/move.mp3");
-	rotateSFX = new Audio("sounds/rotate.mp3");
-	dropSFX = new Audio("sounds/drop.mp3");
-} catch(error) {
-	class EmptySound {
-  	play() {}
-  }
-	moveSFX = new EmptySound();
-	rotateSFX = new EmptySound();
-	dropSFX = new EmptySound();
-}
+moveSFX = new Audio("sounds/move.mp3");
+rotateSFX = new Audio("sounds/rotate.mp3");
+dropSFX = new Audio("sounds/drop.mp3");
 
 class Canvas {
   constructor() {
@@ -228,7 +219,7 @@ class Piece {
   }
 
   left(fromKey = true) {
-    moveSFX.play();
+    playSound(moveSFX);
     this.pos[0] -= 1;
     if (this.collide()) {
       this.pos[0] += 1;
@@ -238,7 +229,7 @@ class Piece {
   }
 
   right(fromKey = true) {
-    moveSFX.play();
+    playSound(moveSFX);
     this.pos[0] += 1;
     if (this.collide()) {
       this.pos[0] -= 1;
@@ -248,7 +239,6 @@ class Piece {
   }
 
   hardDrop() {
-  	dropSFX.play()
     while (!this.collide()) {
       this.pos[1] += 1;
     }
@@ -313,7 +303,7 @@ class Piece {
       this.totalMoves += "c";
       for (let i = 0; i < 3; i++) {
         this.rotate();
-        rotateSFX.play();
+        playSound(rotateSFX);
       }
       if (this.collide()) {
         this.rotate();
@@ -325,7 +315,7 @@ class Piece {
       if (this.collide()) {
         for (let i = 0; i < 3; i++) {
           this.rotate();
-          rotateSFX.play();
+          playSound(rotateSFX);
         }
       } else {
         this.startMove = Date.now();
@@ -335,7 +325,7 @@ class Piece {
       this.totalMoves += "1";
       for (let i = 0; i < 2; i++) {
         this.rotate();
-        rotateSFX.play();
+        playSound(rotateSFX);
       }
       if (this.collide()) {
         for (let i = 0; i < 2; i++) {
@@ -387,6 +377,7 @@ class Piece {
     // hard drop
     if (keysQueue[keys.hardDrop]) {
       this.hardDrop();
+	  	playSound(dropSFX);
       return [true, forceDraw];
     }
 
@@ -419,6 +410,14 @@ class Piece {
         }
       }
     }
+  }
+}
+
+function playSound(sound) {
+	if (sound != undefined) {
+  	sound.pause();
+    sound.currentTime = 0;
+    sound.play();
   }
 }
 
