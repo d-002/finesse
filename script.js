@@ -359,6 +359,7 @@ class Piece {
           forceDraw = true;
         }
       } else { // instant movement (0 ARR)
+	playSound(moveSFX);
         let add;
         if (this.lastDASMove === 0) {
           this.removeChar(pressed[keys.left] ? "l" : "r");
