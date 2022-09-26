@@ -22,6 +22,8 @@ Cookies are used to save your preferences and expire in 30 days. By using this f
 
 ## Images
 
+Don't worry about the J and L colors being wrong in these images, this has been fixed.
+
 ![image](https://user-images.githubusercontent.com/69427207/187068836-4f6e3080-2278-49e8-a99a-a3285e98faef.png)
 
 ![image](https://user-images.githubusercontent.com/69427207/187068840-002594b0-ae7f-4860-948d-70ab5a0e9009.png) ![image](https://user-images.githubusercontent.com/69427207/187068854-0442cbd4-83d0-4683-9943-8a78103274f4.png)
