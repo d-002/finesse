@@ -15,8 +15,8 @@ patterns = [
 patternNames = ["O", "T", "J", "L", "S", "Z", "I"];
 positionNames = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8];
 rotationNames = ["N", "E", "S", "W"];
-colors = ["#f6d03c", "#9739a2", "#f38927", "#1165b5", "#51b84d", "#eb4f65", "#42afe1", "#868686"]; // last one for goal
-colors_ = ["#ffff7f", "#d958e9", "#ffba59", "#339bff", "#84f880", "#ff7f79", "#6ceaff", "#dddddd"]; // top of the blocks
+colors = ["#f6d03c", "#9739a2", "#1165b5", "#f38927", "#51b84d", "#eb4f65", "#42afe1", "#868686"]; // last one for goal
+colors_ = ["#ffff7f", "#d958e9", "#339bff", "#ffba59", "#84f880", "#ff7f79", "#6ceaff", "#dddddd"]; // top of the blocks
 pressed = {}; // keys pressed
 keysQueue = {}; // keys pressed/released this frame
 keys = {
@@ -359,7 +359,7 @@ class Piece {
           forceDraw = true;
         }
       } else { // instant movement (0 ARR)
-	playSound(moveSFX);
+	      playSound(moveSFX);
         let add;
         if (this.lastDASMove === 0) {
           this.removeChar(pressed[keys.left] ? "l" : "r");
@@ -670,6 +670,7 @@ function restart() {
   }
 
   totalFinesse = 0;
+  totalFaultedPieces = 0;
   whenPlaced = [];
   stopButton.classList = "pseudo-button";
   stopButton.innerHTML = "Stop";
