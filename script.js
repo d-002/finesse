@@ -625,7 +625,16 @@ function toggleSetting(id) {
 }
 
 function start() {
-  canvas = new Canvas();
+	// add event listeners for sounds
+	function btn() {
+  	playSound(buttonSFX);
+  }
+	let btns = document.querySelectorAll(".pseudo-button,.input-button");
+	for (let i = 0; i < btns.length; i++) {
+		btns[i].addEventListener("click", btn)
+	}
+
+	canvas = new Canvas();
   toggleMessage = document.getElementById("toggle-message");
   mobileControlsDiv = document.getElementById("mobile-controls-div");
   tipsP = document.getElementById("tips");
@@ -867,10 +876,6 @@ window.addEventListener("keyup",
     keysQueue[e.key] = false;
   });
 
-let btns = document.querySelectorAll(".pseudo-button,.input-button");
-for (let i = 0; i < btns.length; i++) {
-	btns[i].addEventListener("click", () => {playSound(buttonSFX)})
-}
 // handle touch (mobile mode)
 
 function handleTouchStart(evt) {
