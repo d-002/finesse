@@ -798,6 +798,7 @@ function gameFrame(id, length = 1) {
   }
 
   if (keysQueue[keys.restart]) {
+  	playSound(restartSFX);
   	window.setTimeout(restart, 0);
   }
   
