@@ -121,6 +121,9 @@ for (let pi = 0; pi < patternNames.length; pi++) { // for every piece
 moveSFX = new Audio("sounds/move.mp3");
 rotateSFX = new Audio("sounds/rotate.mp3");
 dropSFX = new Audio("sounds/drop.mp3");
+failSFX = new Audio("sounds/fail.mp3");
+restartSFX = new Audio("sounds/restart.mp3");
+buttonSFX = new Audio("sounds/button.mp3");
 
 class Canvas {
   constructor() {
@@ -780,6 +783,7 @@ function gameFrame(id, length = 1) {
     if (ok) {
       newGoal();
     } else {
+    	playSound(failSFX);
       piece = new Piece(goal.index); // retry
     }
   }
@@ -863,6 +867,10 @@ window.addEventListener("keyup",
     keysQueue[e.key] = false;
   });
 
+let btns = document.querySelectorAll(".pseudo-button,.input-button");
+for (let i = 0; i < btns.length; i++) {
+	btns[i].addEventListener("click", () => {playSound(buttonSFX)})
+}
 // handle touch (mobile mode)
 
 function handleTouchStart(evt) {
