@@ -887,9 +887,6 @@ function handleTouch(evt, value) {
       }
       // trigger linked action
       let action = touches[i].target.getAttribute("linked-action");
-      if (action == undefined) { // take attribute from parent (clicked image)
-      	action = touches[i].target.parentNode.getAttribute("linked-action");
-      }
       pressed[keys[action]] = value;
       keysQueue[keys[action]] = value;
     }
