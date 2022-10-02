@@ -88,6 +88,7 @@ div:not(.invisible) {
 
 .input-button {
   /* input type="submit" */
+  font-family: open sans, calibri, sans-serif;
   border: 2px solid #aaa;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   border-radius: 5px;
