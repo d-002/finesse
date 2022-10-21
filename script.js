@@ -628,6 +628,7 @@ function start() {
 	// add event listeners for sounds
 	function btn() {
   	playSound(buttonSFX);
+    console.log("sound");
   }
 	let btns = document.querySelectorAll(".pseudo-button,.input-button");
 	for (let i = 0; i < btns.length; i++) {
