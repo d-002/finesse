@@ -845,6 +845,7 @@ function toggleDevice() {
     let buttons = mobileControlsDiv.children;
     for (let i = 0; i < buttons.length; i++) {
       mobileButtons.push(buttons[i]);
+      mobileButtons.push(buttons[i].firstChild);
     }
   } else {
     device = "Desktop"; // toggle to desktop website
