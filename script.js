@@ -893,15 +893,23 @@ function handleTouch(evt, value) {
   const touches = evt.changedTouches;
 
   for (let i = 0; i < touches.length; i++) {
-    if (mobileButtons.includes(touches[i].target)) {
+    if (mobileButtons.includes()) {
       // change button appearance (touched)
-      if (value) {
-        touches[i].target.classList.add("touched");
+      let target;
+      if (mobileButtons.includes(target.children)) {
+      	// button itself
+        target = touches[i].target;
       } else {
-        touches[i].target.classList.remove("touched");
+      	// image in button: highlight the button
+        target = touches[i].target.parentNode;
+      }
+      if (value) {
+        target.classList.add("touched");
+      } else {
+        target.classList.remove("touched");
       }
       // trigger linked action
-      let action = touches[i].target.getAttribute("linked-action");
+      let action = target.getAttribute("linked-action");
       pressed[keys[action]] = value;
       keysQueue[keys[action]] = value;
     }
