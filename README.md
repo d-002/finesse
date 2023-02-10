@@ -1,5 +1,7 @@
 # Javascript Finesse trainer
 
+Try it out: https://d-002.github.io/finesse
+
 ## General
 
 Place pieces one at a time where the grey shadow is.
