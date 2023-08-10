@@ -6,13 +6,13 @@ Try it out: https://d-002.github.io/finesse
 
 Place pieces one at a time where the grey shadow is.
 
-You can change the pieces you want to train on, their positions and rotations by selecting or unselecting the colored letters and numbers in the Piece settings section. You must then validate your settings by clicking on the Apply changes button.
+You can change the pieces you want to train on, their positions and rotations by selecting or unselecting the colored letters and numbers in the Piece settings section. You must then apply and save your settings by clicking on the *Apply changes* button.
 
-You can change your keybinds, DAR and ARR in the Keys settings menu.
+You can change your keybinds, DAS and ARR in the Keys settings menu.
 
-Your total finesse errors, placed pieces, PPS are displayed, along with some tips to help you improve.
+Your total finesse errors, placed pieces, PPS are displayed, along with some finesse tips to help you improve.
 
-Expect your PPS to be slower than usual, as there is no way to foresee the next pieces placements.
+Expect your PPS to be slower than usual, as there is no way to plan or to look ahead to the next piece placements.
 
 ## Mobile
 
