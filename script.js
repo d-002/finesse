@@ -1,8 +1,7 @@
-let canvas, toggleMessage, mobileControlsDiv, stopButton, tips, totalFinesseP, totalPiecesP, ppsP, mobileButtons, adDiv, settingsButton, applyButton, settingsDiv, settingsForm, helpDiv, cookiePopup;
+let canvas, toggleMessage, mobileControlsDiv, stopButton, tips, totalFinesseP, totalPiecesP, ppsP, adDiv, settingsButton, applyButton, settingsDiv, settingsForm, helpDiv, cookiePopup;
 let device, threads, patterns, patternNames, rotationNames, colors, colors_, piece, pressed, keysQueue, keys, DAS, ARR, pieceChoice, positionChoice, rotationChoice, goal, scores, totalFinesse, totalFaultedPieces, finesse, finesseCodes, whenPlaced, cookiePopupOk, moveSFX, rotateSFX, dropSFX;
 device = "Desktop";
 threads = {}; // thread id: isRunning
-mobileButtons = [];
 patterns = [
   ["0000", "0110", "0110", "0000"], // O
   ["010", "111", "000"], // T
@@ -841,12 +840,6 @@ function toggleDevice() {
     adDiv.style.display = "none";
     settingsForm.style.display = "none";
 
-    mobileButtons = [];
-    let buttons = mobileControlsDiv.children;
-    for (let i = 0; i < buttons.length; i++) {
-      mobileButtons.push(buttons[i]);
-      mobileButtons.push(buttons[i].firstChild);
-    }
   } else {
     device = "Desktop"; // toggle to desktop website
     document.body.className = "";
@@ -893,26 +886,18 @@ function handleTouch(evt, value) {
   const touches = evt.changedTouches;
 
   for (let i = 0; i < touches.length; i++) {
-    if (mobileButtons.includes()) {
-      // change button appearance (touched)
-      let target;
-      if (mobileButtons.includes(target.children)) {
-      	// button itself
-        target = touches[i].target;
-      } else {
-      	// image in button: highlight the button
-        target = touches[i].target.parentNode;
-      }
-      if (value) {
-        target.classList.add("touched");
-      } else {
-        target.classList.remove("touched");
-      }
-      // trigger linked action
-      let action = target.getAttribute("linked-action");
-      pressed[keys[action]] = value;
-      keysQueue[keys[action]] = value;
+    // change button appearance (touched), but make sure to target the right element
+    let target = touches[i].target;
+	if (target.tagName == "IMG") target = target.parentNode;
+    if (value) {
+      target.classList.add("touched");
+    } else {
+      target.classList.remove("touched");
     }
+    // trigger linked action
+    let action = target.getAttribute("linked-action");
+    pressed[keys[action]] = value;
+    keysQueue[keys[action]] = value;
   }
 }
 
