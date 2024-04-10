@@ -1,6 +1,6 @@
 # Javascript Finesse trainer
 
-Try it out: https://d-002.github.io/finesse
+Try it out: [d-002.github.io/finesse](https://d-002.github.io/finesse)
 
 ## General
 
@@ -20,7 +20,8 @@ This trainer has got a mobile version that reorganizes the screen and adds butto
 
 ## Cookies
 
-Cookies are used to save your preferences and expire in 30 days. By using this finesse trainer, you accept the use of cookies.
+> [!NOTE]\
+> Cookies are used to save your preferences and expire in 30 days. By using this finesse trainer, you accept the use of cookies.
 
 ## Images
 
