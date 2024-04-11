@@ -1,6 +1,6 @@
 # Javascript Finesse trainer
 
-Try it out: [d-002.github.io/finesse](https://d-002.github.io/finesse)
+## [Try it out](https://d-002.github.io/finesse)
 
 ## General
 
