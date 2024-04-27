@@ -1,5 +1,6 @@
 let canvas, toggleMessage, mobileControlsDiv, stopButton, tips, totalFinesseP, totalPiecesP, ppsP, adDiv, settingsButton, applyButton, settingsDiv, settingsForm, helpDiv, cookiePopup;
 let device, threads, patterns, patternNames, rotationNames, colors, colors_, piece, pressed, keysQueue, keys, DAS, ARR, pieceChoice, positionChoice, rotationChoice, goal, scores, totalFinesse, totalFaultedPieces, finesse, finesseCodes, whenPlaced, cookiePopupOk, moveSFX, rotateSFX, dropSFX;
+
 device = "Desktop";
 threads = {}; // thread id: isRunning
 patterns = [
@@ -14,28 +15,46 @@ patterns = [
 patternNames = ["O", "T", "J", "L", "S", "Z", "I"];
 positionNames = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8];
 rotationNames = ["N", "E", "S", "W"];
-colors = ["#f6d03c", "#9739a2", "#1165b5", "#f38927", "#51b84d", "#eb4f65", "#42afe1", "#868686"]; // last one for goal
-colors_ = ["#ffff7f", "#d958e9", "#339bff", "#ffba59", "#84f880", "#ff7f79", "#6ceaff", "#dddddd"]; // top of the blocks
+colors = [
+  "#f6d03c",
+  "#9739a2",
+  "#1165b5",
+  "#f38927",
+  "#51b84d",
+  "#eb4f65",
+  "#42afe1",
+  "#868686",
+]; // last one for goal
+colors_ = [
+  "#ffff7f",
+  "#d958e9",
+  "#339bff",
+  "#ffba59",
+  "#84f880",
+  "#ff7f79",
+  "#6ceaff",
+  "#dddddd",
+]; // top of the blocks
 pressed = {}; // keys pressed
 keysQueue = {}; // keys pressed/released this frame
 keys = {
-  "left": "ArrowLeft",
-  "right": "ArrowRight",
-  "hardDrop": " ",
-  "rotateCCW": "z",
-  "rotateCW": "ArrowUp",
-  "rotate180": "a",
-  "restart": "F4"
+  left: "ArrowLeft",
+  right: "ArrowRight",
+  hardDrop: " ",
+  rotateCCW: "q",
+  rotateCW: "w",
+  rotate180: "e",
+  restart: "r",
 }; // assigned keys for each action
 keysNames = {
-  "left": "Move mino left",
-  "right": "Move mino right",
-  "hardDrop": "Hard drop mino",
-  "rotateCCW": "Rotate counterclockwise",
-  "rotateCW": "Rotate clockwise",
-  "rotate180": "Rotate 180°",
-  "restart": "Restart"
-}
+  left: "Move mino left",
+  right: "Move mino right",
+  hardDrop: "Hard drop mino",
+  rotateCCW: "Rotate counterclockwise",
+  rotateCW: "Rotate clockwise",
+  rotate180: "Rotate 180°",
+  restart: "Restart",
+};
 totalFinesse = 0; // number of errors
 totalFaultedPieces = 0; // number of finesse faulted pieces
 cookiePopupOk = false; // set to true when popup button clicked
@@ -44,70 +63,75 @@ whenPlaced = []; // when each piece has been placed (used to calculate PPS)
 
 // combinations of moves for every possible case
 finesse = {
-  "O": {
+  O: {
     "-1": ["L", "L", "L", "L"],
-    "0": ["Lr", "Lr", "Lr", "Lr"],
-    "1": ["ll", "ll", "ll", "ll"],
-    "2": ["l", "l", "l", "l"],
-    "3": ["", "", "", ""],
-    "4": ["r", "r", "r", "r"],
-    "5": ["rr", "rr", "rr", "rr"],
-    "6": ["Rl", "Rl", "Rl", "Rl"],
-    "7": ["R", "R", "R", "R"]
+    0: ["Lr", "Lr", "Lr", "Lr"],
+    1: ["ll", "ll", "ll", "ll"],
+    2: ["l", "l", "l", "l"],
+    3: ["", "", "", ""],
+    4: ["r", "r", "r", "r"],
+    5: ["rr", "rr", "rr", "rr"],
+    6: ["Rl", "Rl", "Rl", "Rl"],
+    7: ["R", "R", "R", "R"],
   },
-  "T": {
+  T: {
     "-1": [null, "CL", null, null],
-    "0": ["L", "LC", "1L", "Lc"],
-    "1": ["ll", "llC", "1ll", "llc"],
-    "2": ["l", "lC", "1l", "lc"],
-    "3": ["", "C", "1", "c"],
-    "4": ["r", "rC", "1r", "rc"],
-    "5": ["rr", "rrC", "1rr", "rrc"],
-    "6": ["Rl", "RlC", "1Rl", "Rlc"],
-    "7": ["R", "RC", "1R", "Rc"],
-    "8": [null, null, null, "cR"]
+    0: ["L", "LC", "1L", "Lc"],
+    1: ["ll", "llC", "1ll", "llc"],
+    2: ["l", "lC", "1l", "lc"],
+    3: ["", "C", "1", "c"],
+    4: ["r", "rC", "1r", "rc"],
+    5: ["rr", "rrC", "1rr", "rrc"],
+    6: ["Rl", "RlC", "1Rl", "Rlc"],
+    7: ["R", "RC", "1R", "Rc"],
+    8: [null, null, null, "cR"],
   },
-  "S": { // some of the rotations are pointless
-    "0": ["L", "LC", null, "Lc"],
+  S: {
+    // some of the rotations are pointless
+    0: ["L", "LC", null, "Lc"],
     // 1
-    "2": ["l", null, null, "lc"],
-    "3": ["", "C", null, "c"],
-    "4": ["r", "rC", null, null],
-    "5": ["rr", "rrC", null, null],
+    2: ["l", null, null, "lc"],
+    3: ["", "C", null, "c"],
+    4: ["r", "rC", null, null],
+    5: ["rr", "rrC", null, null],
     // 6
-    "7": ["R", "RC", null, "Rc"]
+    7: ["R", "RC", null, "Rc"],
   },
-  "I": { // same
+  I: {
+    // same
     "-1": [null, null, null, "cL"],
-    "0": ["L", null, null, "Lc"],
-    "1": ["ll", "LC", null, "Lc"],
-    "2": ["l", null, null, "lc"],
-    "3": ["", "C", null, "c"],
-    "4": ["r", "rC", null, null],
-    "5": ["rr", "rC", null, null],
-    "6": ["R", "RC", null, "RC"],
-    "7": [null, "CR", null, null]
+    0: ["L", null, null, "Lc"],
+    1: ["ll", "LC", null, "Lc"],
+    2: ["l", null, null, "lc"],
+    3: ["", "C", null, "c"],
+    4: ["r", "rC", null, null],
+    5: ["rr", "rC", null, null],
+    6: ["R", "RC", null, "RC"],
+    7: [null, "CR", null, null],
   },
 };
 finesse.J = finesse.L = finesse.T;
 finesse.Z = finesse.S;
 finesseCodes = {
-  "l": "left",
-  "r": "right",
-  "L": "DAS left",
-  "R": "DAS right",
-  "c": "CCW rotation",
-  "C": "CW rotation",
-  "1": "180° rotation"
+  l: "left",
+  r: "right",
+  L: "DAS left",
+  R: "DAS right",
+  c: "CCW rotation",
+  C: "CW rotation",
+  1: "180° rotation",
 };
 
 scores = {};
-for (let pi = 0; pi < patternNames.length; pi++) { // for every piece
+for (let pi = 0; pi < patternNames.length; pi++) {
+  // for every piece
   scores[patternNames[pi]] = {};
-  let pos = Object.keys(finesse[patternNames[pi]]);
-  for (let p = 0; p < pos.length; p++) { // for every possible position (string form)
+  const pos = Object.keys(finesse[patternNames[pi]]);
+  for (let p = 0; p < pos.length; p++) {
+    // for every possible position (string form)
     scores[patternNames[pi]][pos[p]] = [];
-    for (let r = 0; r < 4; r++) { // for every rotation
+    for (let r = 0; r < 4; r++) {
+      // for every rotation
       if (finesse[patternNames[pi]][pos[p]][r] === null) {
         scores[patternNames[pi]][pos[p]].push(null);
       } else {
@@ -130,15 +154,25 @@ class Canvas {
     this.ctx = this.canvas.getContext("2d");
   }
 
-  drawBlock(x, y, index, blockOnTop, alpha) {
+  drawBlock(x, y, index, blockOnTop, alpha, isGoal = false) {
     // block with 3D-like border around
     x *= 40;
     y *= 40;
     this.ctx.fillStyle = hexToRGBA(colors[index], alpha);
-    this.ctx.fillRect(x, y, 40, 40);
-    this.ctx.fill();
 
-    if (!blockOnTop) {
+    if (isGoal) {
+      this.ctx.lineWidth = 2.5;
+      this.ctx.strokeStyle = "rgba(255, 255, 255, 1)";
+      this.ctx.setLineDash([5, 4]);
+      this.ctx.strokeRect(x, y, 40, 40);
+    } else {
+      this.ctx.fillRect(x, y, 40, 40);
+    }
+
+    this.ctx.fill();
+    this.ctx.setLineDash([]);
+
+    if (!blockOnTop && !isGoal) {
       this.ctx.fillStyle = hexToRGBA(colors_[index], alpha);
       this.ctx.fillRect(x, y - 8, 40, 8);
       this.ctx.fill();
@@ -151,7 +185,7 @@ class Canvas {
     this.ctx.fill();
 
     // draw lines
-    this.ctx.lineWidth = 2;
+    this.ctx.lineWidth = 1;
     this.ctx.strokeStyle = "rgba(170, 170, 170, 0.3)";
     for (let x = 1; x < 10; x++) {
       for (let y = 1; y < 20; y++) {
@@ -180,7 +214,7 @@ class Piece {
 
     this.pattern = [];
     for (let y = 0; y < this.len; y++) {
-      let line = patterns[index][y];
+      const line = patterns[index][y];
       this.pattern.push([]);
       for (let x = 0; x < line.length; x++) {
         this.pattern[y].push(parseInt(line[x]));
@@ -200,8 +234,8 @@ class Piece {
     for (let x = 0; x < this.len; x++) {
       for (let y = 0; y < this.len; y++) {
         if (this.pattern[y][x]) {
-          let x_ = x + this.pos[0];
-          let y_ = y + this.pos[1];
+          const x_ = x + this.pos[0];
+          const y_ = y + this.pos[1];
           if (x_ < 0 || x_ > 9 || y_ < 0 || y_ > 19) {
             return true;
           }
@@ -211,10 +245,11 @@ class Piece {
     return false;
   }
 
-  rotate() { // clockwise
-    let newPattern = [];
+  rotate() {
+    // clockwise
+    const newPattern = [];
     for (let x = 0; x < this.len; x++) {
-      newPattern.push([])
+      newPattern.push([]);
       for (let y = 0; y < this.len; y++) {
         newPattern[x].push(this.pattern[this.len - y - 1][x]);
       }
@@ -227,9 +262,9 @@ class Piece {
     if (this.collide()) {
       this.pos[0] += 1;
     } else {
-	    playSound(moveSFX);
-	    if (fromKey) {
-  	    this.startMove = Date.now();
+      playSound(moveSFX);
+      if (fromKey) {
+        this.startMove = Date.now();
       }
     }
   }
@@ -239,9 +274,9 @@ class Piece {
     if (this.collide()) {
       this.pos[0] -= 1;
     } else {
-	    playSound(moveSFX);
-	    if (fromKey) {
-  	    this.startMove = Date.now();
+      playSound(moveSFX);
+      if (fromKey) {
+        this.startMove = Date.now();
       }
     }
   }
@@ -258,7 +293,12 @@ class Piece {
       return false; // shouldn't happen
     }
 
-    let x1, y1, x2, y2, thisPos, piecePos;
+    let x1;
+    let y1;
+    let x2;
+    let y2;
+    let thisPos;
+    let piecePos;
     x1 = this.pos[0];
     y1 = this.pos[1];
     x2 = piece.pos[0];
@@ -285,9 +325,11 @@ class Piece {
     return true;
   }
 
-  removeChar(chr) { // remove last occurence of chr in this.totalMoves
-    let index = this.totalMoves.lastIndexOf(chr);
-    this.totalMoves = this.totalMoves.slice(0, index) + this.totalMoves.slice(index + 1);
+  removeChar(chr) {
+    // remove last occurence of chr in this.totalMoves
+    const index = this.totalMoves.lastIndexOf(chr);
+    this.totalMoves =
+      this.totalMoves.slice(0, index) + this.totalMoves.slice(index + 1);
   }
 
   update() {
@@ -297,8 +339,7 @@ class Piece {
     if (keysQueue[keys.left]) {
       this.totalMoves += "l";
       this.left();
-    }
-    else if (keysQueue[keys.right]) {
+    } else if (keysQueue[keys.right]) {
       this.totalMoves += "r";
       this.right();
     }
@@ -346,7 +387,8 @@ class Piece {
     if (this.startMove && Date.now() - this.startMove > DAS) {
       if (ARR) {
         if (Date.now() - this.lastDASMove > ARR) {
-          if (this.lastDASMove === 0) { // start of DAS
+          if (this.lastDASMove === 0) {
+            // start of DAS
             // remove the previous l/r movement and add DAS
             this.removeChar(pressed[keys.left] ? "l" : "r");
             this.totalMoves += pressed[keys.left] ? "L" : "R";
@@ -360,8 +402,9 @@ class Piece {
           this.lastDASMove = Date.now();
           forceDraw = true;
         }
-      } else { // instant movement (0 ARR)
-	      playSound(moveSFX);
+      } else {
+        // instant movement (0 ARR)
+        playSound(moveSFX);
         let add;
         if (this.lastDASMove === 0) {
           this.removeChar(pressed[keys.left] ? "l" : "r");
@@ -386,7 +429,7 @@ class Piece {
     // hard drop
     if (keysQueue[keys.hardDrop]) {
       this.hardDrop();
-	  	playSound(dropSFX);
+      playSound(dropSFX);
       return [true, forceDraw];
     }
 
@@ -394,7 +437,8 @@ class Piece {
   }
 
   draw() {
-    let trueY, shadowY;
+    let trueY;
+    let shadowY;
     if (!this.goal) {
       trueY = this.pos[1];
       this.hardDrop();
@@ -410,11 +454,31 @@ class Piece {
             blockOnTop = false;
           }
 
-          if (this.goal) { // draw grey shape
-            canvas.drawBlock(this.pos[0] + x, this.pos[1] + y, 7, blockOnTop, 0.3);
-          } else { // draw piece and shadow
-            canvas.drawBlock(this.pos[0] + x, shadowY + y, this.index, blockOnTop, 0.3);
-            canvas.drawBlock(this.pos[0] + x, trueY + y, this.index, blockOnTop);
+          if (this.goal) {
+            // draw grey shape
+            canvas.drawBlock(
+              this.pos[0] + x,
+              this.pos[1] + y,
+              7,
+              blockOnTop,
+              1,
+              this.goal
+            );
+          } else {
+            // draw piece and shadow
+            canvas.drawBlock(
+              this.pos[0] + x,
+              shadowY + y,
+              this.index,
+              blockOnTop,
+              1
+            );
+            canvas.drawBlock(
+              this.pos[0] + x,
+              trueY + y,
+              this.index,
+              blockOnTop,
+            );
           }
         }
       }
@@ -423,25 +487,37 @@ class Piece {
 }
 
 function playSound(sound) {
-	if (sound != undefined) {
-  	sound.pause();
+  if (sound != undefined) {
+    sound.pause();
     sound.currentTime = 0;
     sound.play();
   }
 }
 
-function mobileCheck() { // switch to mobile if needed
+function mobileCheck() {
+  // switch to mobile if needed
   let check = false;
-  (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
+  (function (a) {
+    if (
+      /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
+        a,
+      ) ||
+      /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(
+        a.substr(0, 4),
+      )
+    )
+      check = true;
+  })(navigator.userAgent || navigator.vendor || window.opera);
   if (check === true) {
-  	toggleDevice();
+    toggleDevice();
   }
 }
 
-function hexToRGBA(hex, alpha) { // hex needs to be 6 digits
-  var r = parseInt(hex.slice(1, 3), 16),
-    g = parseInt(hex.slice(3, 5), 16),
-    b = parseInt(hex.slice(5, 7), 16);
+function hexToRGBA(hex, alpha) {
+  // hex needs to be 6 digits
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
 
   if (alpha) {
     return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
@@ -456,18 +532,22 @@ function updateSettings() {
   rotationChoice = [];
 
   // [list to get the names from, list to add to, string to add before id]
-  let values = [
+  const values = [
     [patternNames, pieceChoice, "piece-"],
     [positionNames, positionChoice, "position-"],
-    [rotationNames, rotationChoice, "rotation-"]
+    [rotationNames, rotationChoice, "rotation-"],
   ];
 
   for (let i = 0; i < values.length; i++) {
-    let listFrom = values[i][0];
-    let listTo = values[i][1];
-    let addToId = values[i][2];
+    const listFrom = values[i][0];
+    const listTo = values[i][1];
+    const addToId = values[i][2];
     for (let j = 0; j < listFrom.length; j++) {
-      if (document.getElementById(addToId + listFrom[j]).classList.contains("checked")) {
+      if (
+        document
+          .getElementById(addToId + listFrom[j])
+          .classList.contains("checked")
+      ) {
         listTo.push(listFrom[j]);
       }
     }
@@ -479,74 +559,90 @@ function updateSettings() {
 }
 
 function updateDASSettings() {
-  let DAS_ = document.getElementById("DAS");
-  let ARR_ = document.getElementById("ARR");
+  const DAS_ = document.getElementById("DAS");
+  const ARR_ = document.getElementById("ARR");
   DAS = parseInt(DAS_.value); // ms
   ARR = parseInt(ARR_.value); // ms
 }
 
 function updateSettingsInHTML() {
   // [list to check if selected, list to get the names from, string to add before id]
-  let values = [
+  const values = [
     [pieceChoice, patternNames, "piece-"],
     [positionChoice, positionNames, "position-"],
-    [rotationChoice, rotationNames, "rotation-"]
+    [rotationChoice, rotationNames, "rotation-"],
   ];
 
-	// update piece settings checkboxes
+  // update piece settings checkboxes
   for (let i = 0; i < values.length; i++) {
-    let listSelected = values[i][0];
-    let listNames = values[i][1];
-    let addToId = values[i][2];
+    const listSelected = values[i][0];
+    const listNames = values[i][1];
+    const addToId = values[i][2];
     for (let j = 0; j < listNames.length; j++) {
-      let element = document.getElementById(addToId + listNames[j]);
-      if (element.classList.contains("unchecked") && listSelected.includes(listNames[j])) {
+      const element = document.getElementById(addToId + listNames[j]);
+      if (
+        element.classList.contains("unchecked") &&
+        listSelected.includes(listNames[j])
+      ) {
         toggleSetting(element.id); // check element
       }
-      if (element.classList.contains("checked") && !listSelected.includes(listNames[j])) {
+      if (
+        element.classList.contains("checked") &&
+        !listSelected.includes(listNames[j])
+      ) {
         toggleSetting(element.id); // uncheck element
       }
     }
   }
-  
+
   // update keybinds
-  let keys_ = Object.keys(keys);
+  const keys_ = Object.keys(keys);
   for (let i = 0; i < keys_.length; i++) {
-  	document.getElementById(keys_[i]).value = keys[keys_[i]];
+    document.getElementById(keys_[i]).value = keys[keys_[i]];
   }
 }
 
 function addSettingsToHTML() {
   // add a style for the pieces toggles
-  let style = document.createElement("style");
+  const style = document.createElement("style");
   document.getElementsByTagName("head")[0].appendChild(style);
 
-  let div = document.getElementById("settings-form");
-  let pieces = document.getElementById("allowed-pieces");
-  let positions = document.getElementById("allowed-positions");
-  let rotations = document.getElementById("allowed-rotations");
+  const div = document.getElementById("settings-form");
+  const pieces = document.getElementById("allowed-pieces");
+  const positions = document.getElementById("allowed-positions");
+  const rotations = document.getElementById("allowed-rotations");
 
   // [place to put, list to get the names from, string to add before id]
-  let values = [
+  const values = [
     [pieces, patternNames, "piece-"],
     [positions, positionNames, "position-"],
-    [rotations, rotationNames, "rotation-"]
+    [rotations, rotationNames, "rotation-"],
   ];
 
-  for (let i = 0; i < values.length; i++) { // generate checkboxes
-    let place = values[i][0];
-    let list = values[i][1];
-    let addToId = values[i][2];
+  for (let i = 0; i < values.length; i++) {
+    // generate checkboxes
+    const place = values[i][0];
+    const list = values[i][1];
+    const addToId = values[i][2];
     for (let j = list.length - 1; j >= 0; j--) {
-      let element = document.createElement("a");
+      const element = document.createElement("a");
       element.setAttribute("id", addToId + list[j]);
-      element.setAttribute("href", "javascript:toggleSetting('ID')".replace(/ID/g, element.id));
+      element.setAttribute(
+        "href",
+        "javascript:toggleSetting('ID')".replace(/ID/g, element.id),
+      );
       element.classList.add("unchecked");
       element.innerHTML = list[j];
 
       // if piece, color it like the piece
       if (place === pieces) {
-        let css = "#ID.checked {background-color: BG1; color: FG1} #ID.unchecked {background-color: BG2; color: FG2}".replace(/ID/g, element.id).replace(/BG1/g, colors[patternNames.indexOf(list[j])]).replace(/FG1/g, colors_[patternNames.indexOf(list[j])]).replace(/BG2/g, colors[patternNames.length]).replace(/FG2/g, colors_[patternNames.length])
+        const css =
+          "#ID.checked {background-color: BG1; color: FG1} #ID.unchecked {background-color: BG2; color: FG2}"
+            .replace(/ID/g, element.id)
+            .replace(/BG1/g, colors[patternNames.indexOf(list[j])])
+            .replace(/FG1/g, colors_[patternNames.indexOf(list[j])])
+            .replace(/BG2/g, colors[patternNames.length])
+            .replace(/FG2/g, colors_[patternNames.length]);
         style.appendChild(document.createTextNode(css));
       }
 
@@ -556,7 +652,8 @@ function addSettingsToHTML() {
 }
 
 function addKeysSettingsToHTML() {
-  let element, keys_;
+  let element;
+  let keys_;
   keys_ = Object.keys(keys);
   for (let i = 0; i < keys_.length; i++) {
     element = document.createElement("label");
@@ -574,28 +671,28 @@ function addKeysSettingsToHTML() {
 }
 
 function addKeysListeners() {
-  let keys_ = Object.keys(keys);
+  const keys_ = Object.keys(keys);
   for (let i = 0; i < keys_.length; i++) {
     document.getElementById(keys_[i]).addEventListener("keydown", editKey);
   }
 }
 
 function removeKeysListeners() {
-  let keys_ = Object.keys(keys);
+  const keys_ = Object.keys(keys);
   for (let i = 0; i < keys_.length; i++) {
     document.getElementById(keys_[i]).removeEventListener("keydown", editKey);
   }
 }
 
 function editKey(event) {
-  let id = document.activeElement.id;
-  let valid = (event.key !== ";"); // can't use ; character
+  const id = document.activeElement.id;
+  const valid = event.key !== ";"; // can't use ; character
 
   function updateKey() {
     if (valid) {
-    	document.activeElement.value = event.key;
+      document.activeElement.value = event.key;
     } else {
-    	document.activeElement.value = "Unusable character";
+      document.activeElement.value = "Unusable character";
     }
   }
 
@@ -603,16 +700,16 @@ function editKey(event) {
     document.activeElement.value = keys[id];
   }
 
-	if (valid) {
-  	keys[id] = event.key;
+  if (valid) {
+    keys[id] = event.key;
   } else {
-	 	window.setTimeout(resetKey, 1000);
+    window.setTimeout(resetKey, 1000);
   }
- 	window.setTimeout(updateKey, 1);
+  window.setTimeout(updateKey, 1);
 }
 
 function toggleSetting(id) {
-  let caller = document.getElementById(id);
+  const caller = document.getElementById(id);
   if (caller.classList.contains("checked")) {
     caller.classList.add("unchecked");
     caller.classList.remove("checked");
@@ -624,16 +721,16 @@ function toggleSetting(id) {
 }
 
 function start() {
-	// add event listeners for sounds
-	function btn() {
-  	playSound(buttonSFX);
+  // add event listeners for sounds
+  function btn() {
+    playSound(buttonSFX);
   }
-	let btns = document.querySelectorAll(".pseudo-button,.input-button");
-	for (let i = 0; i < btns.length; i++) {
-		btns[i].addEventListener("click", btn)
-	}
+  const btns = document.querySelectorAll(".pseudo-button,.input-button");
+  for (let i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", btn);
+  }
 
-	canvas = new Canvas();
+  canvas = new Canvas();
   toggleMessage = document.getElementById("toggle-message");
   mobileControlsDiv = document.getElementById("mobile-controls-div");
   tipsP = document.getElementById("tips");
@@ -649,22 +746,23 @@ function start() {
   helpDiv = document.getElementById("help");
   cookiePopup = document.getElementById("cookie-popup");
 
-	mobileCheck();
+  mobileCheck();
 
-	updateDASSettings();
+  updateDASSettings();
   addSettingsToHTML();
   addKeysSettingsToHTML();
   openCookies();
   if (cookiePopupOk) {
-  	hideCookiePopup();
+    hideCookiePopup();
   }
 
   restart();
 }
 
 function restart() {
-  function findId() { // find available id in threads
-    let keys = Object.keys(threads);
+  function findId() {
+    // find available id in threads
+    const keys = Object.keys(threads);
     let i = 0;
     while (keys.includes(i)) {
       i++;
@@ -674,8 +772,9 @@ function restart() {
 
   stop();
 
-  if (newGoal()) { // found a valid piece
-    let id = findId();
+  if (newGoal()) {
+    // found a valid piece
+    const id = findId();
     threads[id] = true; // allow a new thread to start
     gameFrame(id);
   }
@@ -688,8 +787,9 @@ function restart() {
 }
 
 function stop() {
-  let keys = Object.keys(threads);
-  for (let i = 0; i < keys.length; i++) { // index backwards in case deletion happens in the process
+  const keys = Object.keys(threads);
+  for (let i = 0; i < keys.length; i++) {
+    // index backwards in case deletion happens in the process
     threads[keys[i]] = false;
   }
   stopButton.classList = "pseudo-button red";
@@ -704,13 +804,17 @@ function newGoal() {
     return null; // not possible; will raise an alert
   }
 
-  let pieceName, positionChoice_, rotationChoice_, pos, rotation;
+  let pieceName;
+  let positionChoice_;
+  let rotationChoice_;
+  let pos;
+  let rotation;
   if (pieceChoice.length !== 0) {
     pieceName = choice(pieceChoice);
 
     positionChoice_ = [];
     for (let i = 0; i < positionChoice.length; i++) {
-      let p = positionChoice[i];
+      const p = positionChoice[i];
       if (Object.keys(finesse[pieceName]).includes(p.toString())) {
         positionChoice_.push(p); // only allow positions contained in this piece finesse
       }
@@ -720,7 +824,7 @@ function newGoal() {
 
       rotationChoice_ = [];
       for (let i = 0; i < rotationChoice.length; i++) {
-        let r = rotationNames.indexOf(rotationChoice[i]);
+        const r = rotationNames.indexOf(rotationChoice[i]);
         if (finesse[pieceName][pos[0].toString()][r] !== null) {
           rotationChoice_.push(r); // only allow rotations contained in this position finesse
         }
@@ -746,9 +850,9 @@ function newGoal() {
 
 function drawPPS() {
   if (whenPlaced.length > 1) {
-    let start = whenPlaced[0];
-    let end = whenPlaced[whenPlaced.length - 1];
-    let pps = (whenPlaced.length - 1) * 1000 / (end - start);
+    const start = whenPlaced[0];
+    const end = whenPlaced[whenPlaced.length - 1];
+    const pps = ((whenPlaced.length - 1) * 1000) / (end - start);
     ppsP.innerHTML = "PPS: " + parseInt(pps * 100) / 100;
   } else {
     ppsP.innerHTML = "PPS: -";
@@ -756,23 +860,29 @@ function drawPPS() {
 }
 
 function gameFrame(id, length = 1) {
-  let return_ = piece.update(); // will return information needed
-  let placed = return_[0];
-  let forceDraw = return_[1];
+  const return_ = piece.update(); // will return information needed
+  const placed = return_[0];
+  const forceDraw = return_[1];
 
   if (length !== 0) {
     canvas.draw();
-    goal.draw();
     piece.draw();
+    goal.draw();
     drawPPS();
   }
 
   if (placed) {
-	  let ok = false;
-    if (piece.equals(goal)) { // correct position and rotation
-      let finesse_, score;
-      finesse_ = finesse[patternNames[goal.index]][goal.pos[0].toString()][goal.rotation];
-      score = scores[patternNames[goal.index]][goal.pos[0].toString()][goal.rotation];
+    let ok = false;
+    if (piece.equals(goal)) {
+      // correct position and rotation
+      let finesse_;
+      let score;
+      finesse_ =
+        finesse[patternNames[goal.index]][goal.pos[0].toString()][
+        goal.rotation
+        ];
+      score =
+        scores[patternNames[goal.index]][goal.pos[0].toString()][goal.rotation];
 
       if (piece.totalMoves.length === finesse_.length) {
         tipsP.innerHTML = "Tips: -";
@@ -785,33 +895,45 @@ function gameFrame(id, length = 1) {
       score[1] += 1;
       whenPlaced.push(Date.now());
       totalFinesse += Math.max(piece.totalMoves.length - finesse_.length, 0);
-      totalFinesseP.innerHTML = "Finesse: " + totalFinesse + "F (" + parseInt((whenPlaced.length-totalFaultedPieces)*10000/whenPlaced.length)/100 + "%)";
+      totalFinesseP.innerHTML =
+        "Finesse: " +
+        totalFinesse +
+        "F (" +
+        parseInt(
+          ((whenPlaced.length - totalFaultedPieces) * 10000) /
+          whenPlaced.length,
+        ) /
+        100 +
+        "%)";
       totalPiecesP.innerHTML = "Total pieces: " + whenPlaced.length;
-		}
+    }
     if (ok) {
       newGoal();
     } else {
-    	playSound(failSFX);
+      playSound(failSFX);
       piece = new Piece(goal.index); // retry
     }
   }
 
   if (keysQueue[keys.restart]) {
-  	playSound(restartSFX);
-  	window.setTimeout(restart, 0);
+    playSound(restartSFX);
+    window.setTimeout(restart, 0);
   }
-  
+
   if (forceDraw === true) {
     length = 1;
-  } else { // if no draw needed, only draw if action done
+  } else {
+    // if no draw needed, only draw if action done
     length = Object.keys(keysQueue).length;
   }
   keysQueue = {}; // reset the queue each frame
-  if (threads[id]) { // this thread is allowed to run
-    window.setTimeout(function() {
-      gameFrame(id, length)
+  if (threads[id]) {
+    // this thread is allowed to run
+    window.setTimeout(function () {
+      gameFrame(id, length);
     }, 0);
-  } else { // stop
+  } else {
+    // stop
     delete threads[id];
   }
 }
@@ -821,7 +943,7 @@ function showTips(tipsCode) {
   for (let i = 0; i < tipsCode.length; i++) {
     tips += finesseCodes[tipsCode[i]];
     if (i !== tipsCode.length - 1) {
-      tips += ", "
+      tips += ", ";
     }
   }
   tipsP.innerHTML = tips;
@@ -857,19 +979,17 @@ function toggleDevice() {
 }
 
 // handle keys pressed
-window.addEventListener("keydown",
-  function(e) {
-    if (!e.repeat) {
-      pressed[e.key] = true;
-      keysQueue[e.key] = true;
-    }
-  });
+window.addEventListener("keydown", function (e) {
+  if (!e.repeat) {
+    pressed[e.key] = true;
+    keysQueue[e.key] = true;
+  }
+});
 
-window.addEventListener("keyup",
-  function(e) {
-    pressed[e.key] = false;
-    keysQueue[e.key] = false;
-  });
+window.addEventListener("keyup", function (e) {
+  pressed[e.key] = false;
+  keysQueue[e.key] = false;
+});
 
 // handle touch (mobile mode)
 
@@ -926,68 +1046,72 @@ function closeHelp() {
 }
 
 function deleteAllCookies() {
-  var cookies = document.cookie.split(";");
+  const cookies = document.cookie.split(";");
 
-  for (var i = 0; i < cookies.length; i++) {
-    document.cookie = cookies[i].split("=")[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+  for (let i = 0; i < cookies.length; i++) {
+    document.cookie =
+      cookies[i].split("=")[0] +
+      "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
   }
 }
 
 function openCookies() {
-	// defaults, when a cookie is non-existent or missing
-	pieceChoice = [...patternNames];
+  // defaults, when a cookie is non-existent or missing
+  pieceChoice = [...patternNames];
   positionChoice = [...positionNames];
   rotationChoice = [...rotationNames];
 
-	if (document.cookie !== "") {
-    let cookie = document.cookie.replaceAll("space", " ").split("; ");
-    let preferences = {};
-    let keys_ = [];
+  if (document.cookie !== "") {
+    const cookie = document.cookie.replaceAll("space", " ").split("; ");
+    const preferences = {};
+    const keys_ = [];
     for (let i = 0; i < cookie.length; i++) {
-      let key = cookie[i].split("=")[0];
-      let value = cookie[i].split("=")[1];
+      const key = cookie[i].split("=")[0];
+      const value = cookie[i].split("=")[1];
       preferences[key] = value;
       keys_.push(key);
     }
 
     // handling
-    let keysOfKeys = Object.keys(keys);
+    const keysOfKeys = Object.keys(keys);
     for (let i = 0; i < keysOfKeys.length; i++) {
-    	if (preferences[keysOfKeys[i]] !== undefined) {
-      	keys[keysOfKeys[i]] = preferences[keysOfKeys[i]];
+      if (preferences[keysOfKeys[i]] !== undefined) {
+        keys[keysOfKeys[i]] = preferences[keysOfKeys[i]];
       }
     }
 
     // piece settings
     if (keys_.includes("pieces")) {
-    	pieceChoice = preferences.pieces.split("");
+      pieceChoice = preferences.pieces.split("");
     }
     if (keys_.includes("positions")) {
-    	positionChoice = preferences.positions.split("");
+      positionChoice = preferences.positions.split("");
     }
     if (keys_.includes("rotations")) {
-    	rotationChoice = preferences.rotations.split("");
+      rotationChoice = preferences.rotations.split("");
     }
 
-		// others
+    // others
     if (preferences.cookiePopupOk === "true") {
-    	cookiePopupOk = true;
+      cookiePopupOk = true;
     }
     if (preferences.DAS !== undefined) {
-    	DAS = parseInt(preferences.DAS);
-		  let DAS_ = document.getElementById("DAS");
+      DAS = parseInt(preferences.DAS);
+      const DAS_ = document.getElementById("DAS");
       DAS_.value = DAS;
     }
     if (preferences.ARR !== undefined) {
-    	ARR = parseInt(preferences.ARR);
-	  	let ARR_ = document.getElementById("ARR");
+      ARR = parseInt(preferences.ARR);
+      const ARR_ = document.getElementById("ARR");
       ARR_.value = ARR;
     }
 
-    for (let i = 0; i < positionChoice.length; i++) { // convert positions to integers + shift them
+    for (let i = 0; i < positionChoice.length; i++) {
+      // convert positions to integers + shift them
       positionChoice[i] = parseInt(positionChoice[i]) - 1; // stored as 0 - 9 instead of -1 - 8
     }
-  } else { // no cookies saved: create them and leave everything as default
+  } else {
+    // no cookies saved: create them and leave everything as default
     console.log("Could not retrieve any cookies");
     saveCookies(); // update cookies
   }
@@ -996,30 +1120,30 @@ function openCookies() {
 }
 
 function saveCookies() {
-  let date = new Date(Date.now() + 2592000000); // expires in 30 days
-  let end = "; expires=" + date.toGMTString() + "; path=/"
+  const date = new Date(Date.now() + 2592000000); // expires in 30 days
+  const end = "; expires=" + date.toGMTString() + "; path=/";
 
-	deleteAllCookies(); // begin fresh
+  deleteAllCookies(); // begin fresh
 
-	// handling
-  let keys_ = Object.keys(keys);
+  // handling
+  const keys_ = Object.keys(keys);
   for (let i = 0; i < keys_.length; i++) {
-  let key = keys[keys_[i]];
-  if (key == " ") {
-  	key = "space";
-  } 
+    let key = keys[keys_[i]];
+    if (key == " ") {
+      key = "space";
+    }
     document.cookie = keys_[i] + "=" + key + end;
   }
 
   // piece settings
   let positionChoice_ = "";
   for (let i = 0; i < positionChoice.length; i++) {
-  	positionChoice_ += positionChoice[i] + 1;
+    positionChoice_ += positionChoice[i] + 1;
   }
   document.cookie = "pieces=" + pieceChoice.join("") + end;
   document.cookie = "positions=" + positionChoice_ + end;
   document.cookie = "rotations=" + rotationChoice.join("") + end;
-  
+
   // others
   document.cookie = "cookiePopupOk=" + cookiePopupOk + end;
   document.cookie = "DAS=" + DAS + end;
@@ -1027,7 +1151,7 @@ function saveCookies() {
 }
 
 function hideCookiePopup() {
-	cookiePopupOk = true; // user when close button clicked
+  cookiePopupOk = true; // user when close button clicked
   cookiePopup.style.display = "none";
   saveCookies();
 }
